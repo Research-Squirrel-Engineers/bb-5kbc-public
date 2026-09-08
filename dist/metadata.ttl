@@ -311,20 +311,20 @@
     dcat:version "0.11.0" ;
     foaf:homepage <https://doi.org/10.5281/zenodo.19830968> ;
     schema:sameAs <http://www.wikidata.org/entity/Q141363969> ;
-    n4op:exampleQuery <file:///C:/git/bb-5kbc-public/classes-with-counts>,
-        <file:///C:/git/bb-5kbc-public/cross-border>,
-        <file:///C:/git/bb-5kbc-public/culture-chronology>,
-        <file:///C:/git/bb-5kbc-public/dating-precision>,
-        <file:///C:/git/bb-5kbc-public/discovery-and-type>,
-        <file:///C:/git/bb-5kbc-public/georeferencing-source>,
-        <file:///C:/git/bb-5kbc-public/literature-coverage>,
-        <file:///C:/git/bb-5kbc-public/locational-confidence>,
-        <file:///C:/git/bb-5kbc-public/sites-on-a-map>,
-        <file:///C:/git/bb-5kbc-public/sites-via-crm>,
-        <file:///C:/git/bb-5kbc-public/time-slice>,
-        <file:///C:/git/bb-5kbc-public/uncertain-attributions> .
+    n4op:exampleQuery <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/classes-with-counts>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/cross-border>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/culture-chronology>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/dating-precision>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/discovery-and-type>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/georeferencing-source>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/literature-coverage>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/locational-confidence>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-on-a-map>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-via-crm>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/time-slice>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/uncertain-attributions> .
 
-<file:///C:/git/bb-5kbc-public/classes-with-counts> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/classes-with-counts> a sh:SPARQLSelectExecutable ;
     dct:title "Verwendete Klassen mit Anzahl"@de,
         "Classes used, with counts"@en ;
     rdfs:comment "Was die Sammlung tatsaechlich enthaelt — die Gegenprobe zur void:classPartition-Statistik."@de,
@@ -341,7 +341,7 @@ SELECT ?class (COUNT(?s) AS ?count) WHERE {
 } GROUP BY ?class ORDER BY DESC(?count)
 """ .
 
-<file:///C:/git/bb-5kbc-public/cross-border> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/cross-border> a sh:SPARQLSelectExecutable ;
     dct:title "Deutsche und polnische Fundstellen je Kulturgruppe"@de,
         "German and Polish sites per cultural group"@en ;
     rdfs:comment "Der Datensatz ueberschreitet eine moderne Grenze, die dem 5. Jahrtausend v. Chr. nichts bedeutet."@de,
@@ -359,7 +359,7 @@ SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {
 } GROUP BY ?culture ?land ORDER BY DESC(?sites)
 """ .
 
-<file:///C:/git/bb-5kbc-public/culture-chronology> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/culture-chronology> a sh:SPARQLSelectExecutable ;
     dct:title "Die Kulturgruppen auf der Zeitachse"@de,
         "The cultural groups on a time axis"@en ;
     rdfs:comment "Wo jede Kulturgruppe zeitlich liegt und wie viele Fundstellen sie traegt. Der Mesolithikum-Balken umspannt vier Jahrtausende."@de,
@@ -380,7 +380,7 @@ SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)
 } GROUP BY ?culture ORDER BY ?from
 """ .
 
-<file:///C:/git/bb-5kbc-public/dating-precision> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/dating-precision> a sh:SPARQLSelectExecutable ;
     dct:title "Wie scharf jede Gruppe datiert ist"@de,
         "How sharply each group is dated"@en ;
     rdfs:comment "Breite des Datierungsintervalls je Kulturgruppe gegen die Anzahl der Fundstellen."@de,
@@ -402,7 +402,7 @@ SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)
 } GROUP BY ?culture ORDER BY ?widest
 """ .
 
-<file:///C:/git/bb-5kbc-public/discovery-and-type> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/discovery-and-type> a sh:SPARQLSelectExecutable ;
     dct:title "Wie die Fundstellen entdeckt wurden"@de,
         "How the sites were found"@en ;
     rdfs:comment "Der Fundstellentyp ist fast nur dort bekannt, wo gegraben wurde — eine Aussage ueber die Forschungsgeschichte, nicht ueber die Vorgeschichte."@de,
@@ -419,7 +419,7 @@ SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {
 } GROUP BY ?mode ORDER BY DESC(?sites)
 """ .
 
-<file:///C:/git/bb-5kbc-public/georeferencing-source> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/georeferencing-source> a sh:SPARQLSelectExecutable ;
     dct:title "Woher die Koordinaten stammen"@de,
         "Where the coordinates came from"@en ;
     rdfs:comment "Jede Koordinate stammt aus einer Georeferenzierungs-Aktivitaet, die ihre Quelle mitfuehrt."@de,
@@ -437,7 +437,7 @@ SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {
 } GROUP BY ?source ORDER BY DESC(?sites)
 """ .
 
-<file:///C:/git/bb-5kbc-public/literature-coverage> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/literature-coverage> a sh:SPARQLSelectExecutable ;
     dct:title "Fundstellen je Kreis, und wie viele publiziert sind"@de,
         "Sites per district, and how many are published"@en ;
     rdfs:comment "Wo der Bestand dicht ist und wo die Literatur duenn wird."@de,
@@ -457,7 +457,7 @@ SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)
 } GROUP BY ?kreis ORDER BY DESC(?sites)
 """ .
 
-<file:///C:/git/bb-5kbc-public/locational-confidence> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/locational-confidence> a sh:SPARQLSelectExecutable ;
     dct:title "Wie gut jede Fundstelle verortet ist"@de,
         "How well each site is located"@en ;
     rdfs:comment "Dieselben Punkte, gefaerbt nach FSL-Verortungsguete statt nach Kultur. Eine Haeufung von Q24 ist eine Haeufung von Mittelpunkten."@de,
@@ -478,7 +478,7 @@ SELECT ?label ?confidence ?accuracy ?wkt WHERE {
 } ORDER BY ?confidence
 """ .
 
-<file:///C:/git/bb-5kbc-public/sites-on-a-map> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-on-a-map> a sh:SPARQLSelectExecutable ;
     dct:title "Die Fundstellen auf der Karte"@de,
         "The sites, on a map"@en ;
     rdfs:comment "Jede Fundstelle mit ihrer kulturellen Zuordnung, als Karte ueber der Tabelle."@de,
@@ -497,7 +497,7 @@ SELECT ?label ?culture ?wkt WHERE {
 } ORDER BY ?culture ?label
 """ .
 
-<file:///C:/git/bb-5kbc-public/sites-via-crm> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-via-crm> a sh:SPARQLSelectExecutable ;
     dct:title "Fundstellen ueber die CIDOC-CRM-Oberklasse"@de,
         "Sites via their CIDOC CRM superclass"@en ;
     rdfs:comment "Prueft, ob die Ausrichtung haelt: gefragt wird nach crm:E27_Site, geantwortet aus bb5kbc:Fundstelle."@de,
@@ -514,7 +514,7 @@ SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
 }
 """ .
 
-<file:///C:/git/bb-5kbc-public/time-slice> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/time-slice> a sh:SPARQLSelectExecutable ;
     dct:title "Was in einem Zeitfenster bestand"@de,
         "What existed in a window of time"@en ;
     rdfs:comment "Fundstellen, deren Datierungsintervall sich mit dem Fenster der beiden Regler ueberschneidet. Geprueft wird Ueberschneidung, nicht Enthaltensein: bei so weiten Intervallen ist das die einzige ehrliche Lesart."@de,
@@ -539,7 +539,7 @@ SELECT ?label ?culture ?wkt WHERE {
 } ORDER BY ?culture ?label
 """ .
 
-<file:///C:/git/bb-5kbc-public/uncertain-attributions> a sh:SPARQLSelectExecutable ;
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/uncertain-attributions> a sh:SPARQLSelectExecutable ;
     dct:title "Wo die Quellen zoegern"@de,
         "Where the record hedges"@en ;
     rdfs:comment "Mit Fragezeichen markierte Werte werden nicht stillschweigend bereinigt, sondern tragen fsl:certaintyDesc \"uncertain\"."@de,
