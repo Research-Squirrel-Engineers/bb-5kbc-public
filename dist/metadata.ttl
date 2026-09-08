@@ -44,7 +44,7 @@
     dct:language <http://id.loc.gov/vocabulary/iso639-1/de>,
         <http://id.loc.gov/vocabulary/iso639-1/en> ;
     dct:license <https://creativecommons.org/licenses/by/4.0/> ;
-    dct:modified "2026-08-19"^^xsd:date ;
+    dct:modified "2026-09-08"^^xsd:date ;
     dct:publisher [ a foaf:Organization ;
             foaf:name "Research Squirrel Engineers Network" ] ;
     dct:title "BB-5KBC: Fundstellen in Brandenburg, Ostdeutschland und Westpolen um 5000 v. Chr."@de,
