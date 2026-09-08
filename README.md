@@ -67,14 +67,26 @@ The bundle is fetched once and then reused. Set `REFRESH_SOURCES = True` in
 
 ## Before this goes into the Knowledge Graph
 
-- [ ] **Wikidata item.** `sameAs:` is `QTODO`. The N4O KG needs a real Q-item.
-- [ ] **Collection ID.** `id:` ends in `/TODO`; NFDI4Objects assigns the number.
-- [ ] **CIDOC CRM alignment.** 3 of 28 classes are aligned. Every build prints
-      the remaining ones — that list is the working list. Confirm each against
-      the application ontology; do not infer an alignment from a class name.
+- [ ] **Wikidata item.** `sameAs:` is `QTODO`. The N4O KG needs a real Q-item;
+      this is the only thing keeping `strict:` at `false`.
 - [ ] **`issued:`** should be the date of the Zenodo release being described.
+- [ ] **fuzzy-sl types.** Five classes reach no CIDOC CRM class: `CertaintyType`,
+      `LocationType`, `MethodType`, `PointType`, `SourceType`. They belong to
+      `fuzzy-sl.squirrel.link`, so the decision is that ontology's, not this
+      repository's — either anchor them upstream, or add the namespace to
+      `model.external` in `metadata.yaml` to record that reusing them unanchored
+      is deliberate.
 - [ ] Then set `strict: true` in `.github/workflows/build.yml`, so that a
       regression fails the build rather than being published quietly.
+
+The collection URI in `id:` is assigned by the VZG by hand; it is not something
+this repository can produce.
+
+The CIDOC CRM alignment itself is **not** on this list. It lives in the bundle,
+which anchors 16 of its 21 domain classes; the build measures that rather than
+restating it. If an anchor is wrong, fix it in
+[bb-5kbc-sites](https://github.com/Research-Squirrel-Engineers/bb-5kbc-sites)
+and refresh the bundle — never here.
 
 ## What the build checks
 

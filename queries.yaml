@@ -33,7 +33,10 @@ collection:
   triples: 28531
   classes: 33
   properties: 81
-  aligned: 3
+  aligned: 16
+  domain: 21
+  external: 7
+  alignment_file: false
 prefixes: 'PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 
   PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>

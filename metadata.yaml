@@ -110,25 +110,22 @@ distributions:
     mediaType: https://www.iana.org/assignments/media-types/text/turtle
 
 # --- 4. Model: alignment to CIDOC CRM ----------------------------------------
-# Only the alignment lives here; the counts are measured. The build reports any
-# class occurring in the bundle without an entry below — that report is the
-# working list for completing this section.
+# Nothing to declare here. The bundle carries its own CIDOC CRM anchoring —
+# bb5kbc:Fundstelle rdfs:subClassOf crm:E27_Site and so on — and the build reads
+# it out transitively rather than restating it. Restating it is how the two come
+# to disagree: an earlier version of this file claimed Entdeckung -> E5_Event
+# while the bundle says crmsci:S19_Encounter_Event.
 #
-# TODO: 27 classes are still unaligned. Confirm each against the application
-# ontology rather than guessing from the class name.
+# `classes:` is only for a class the bundle does *not* anchor, and any entry
+# that contradicts the bundle is reported and, under strict, fails the build.
+#
+# Currently unanchored: the five fuzzy-sl types. They come from
+# fuzzy-sl.squirrel.link, so the decision belongs in that ontology, not here.
+# Either anchor them upstream, or list their namespace under `external:` to
+# record that reusing them unanchored is deliberate.
 
 model:
   bundle: rdf/bb5kbc-bundle.ttl
-
-  classes:
-    - class: http://w3id.org/bb5kbc/ont/Fundstelle
-      crm: http://www.cidoc-crm.org/cidoc-crm/E27_Site
-    - class: http://w3id.org/bb5kbc/ont/Entdeckung
-      crm: http://www.cidoc-crm.org/cidoc-crm/E5_Event
-    - class: http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet
-      crm: http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment
-
-  properties: []
 
 # --- 5. Example queries ------------------------------------------------------
 # Maintained once, shipped three ways: as the query page, as .rq files, and as

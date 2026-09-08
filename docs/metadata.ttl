@@ -50,48 +50,67 @@
     dct:title "BB-5KBC: Fundstellen in Brandenburg, Ostdeutschland und Westpolen um 5000 v. Chr."@de,
         "BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC"@en ;
     dct:type dcmitype:Dataset ;
-    void:classPartition [ void:class <http://w3id.org/bb5kbc/ont/Land> ;
-            void:entities 2 ],
-        [ void:class <http://fuzzy-sl.squirrel.link/ontology/LocationType> ;
+    void:classPartition [ void:class <http://fuzzy-sl.squirrel.link/ontology/LocationType> ;
             void:entities 1 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Publikation> ;
-            void:entities 45 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/externalIdentifierType> ;
-            void:entities 6 ],
         [ void:class owl:ObjectProperty ;
             void:entities 46 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Entdeckung> ;
-            void:entities 432 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Datierung> ;
+            void:entities 540 ;
+            n4op:crmAnchor crm:E52_Time-Span ],
         [ void:class <http://www.opengis.net/ont/sf#Point> ;
             void:entities 540 ],
         [ void:class <http://fuzzy-sl.squirrel.link/ontology/PointType> ;
             void:entities 1 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Kreis> ;
+            void:entities 82 ;
+            n4op:crmAnchor crm:E53_Place ],
         [ void:class owl:Class ;
             void:entities 65 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Kulturgruppe> ;
-            void:entities 9 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/DatierungsMethodeType> ;
+            void:entities 2 ;
+            n4op:crmAnchor crm:E55_Type ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Fundstelle> ;
+            void:entities 540 ;
+            n4op:crmAnchor crm:E27_Site ],
         [ void:class <http://fuzzy-sl.squirrel.link/ontology/MethodType> ;
             void:entities 3 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Bundesland> ;
-            void:entities 15 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Scherbe> ;
-            void:entities 9 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/FundstellenartType> ;
+            void:entities 12 ;
+            n4op:crmAnchor crm:E55_Type ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Entdeckung> ;
+            void:entities 432 ;
+            n4op:crmAnchor <http://www.cidoc-crm.org/extensions/crmsci/S19_Encounter_Event> ],
         [ void:class owl:DatatypeProperty ;
             void:entities 20 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/KulturelleZuordnung> ;
-            void:entities 540 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/DatierungsMethodeType> ;
-            void:entities 2 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Gemeinde> ;
+            void:entities 318 ;
+            n4op:crmAnchor crm:E53_Place ],
+        [ void:class <http://w3id.org/bb5kbc/ont/EntdeckungsartType> ;
+            void:entities 12 ;
+            n4op:crmAnchor crm:E55_Type ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Land> ;
+            void:entities 2 ;
+            n4op:crmAnchor crm:E53_Place ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Publikation> ;
+            void:entities 45 ;
+            n4op:crmAnchor crm:E32_Authority_Document ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Kulturgruppe> ;
+            void:entities 9 ;
+            n4op:crmAnchor crm:E4_Period ],
+        [ void:class <http://w3id.org/bb5kbc/ont/externalIdentifierType> ;
+            void:entities 6 ;
+            n4op:crmAnchor crm:E55_Type ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Scherbe> ;
+            void:entities 9 ;
+            n4op:crmAnchor crm:E22_Human-Made_Object ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Bundesland> ;
+            void:entities 15 ;
+            n4op:crmAnchor crm:E53_Place ],
         [ void:class prov:Plan ;
             void:entities 5 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Fundstelle> ;
-            void:entities 540 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Kreis> ;
-            void:entities 82 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet> ;
-            void:entities 540 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/FundstellenartType> ;
-            void:entities 12 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/KulturelleZuordnung> ;
+            void:entities 540 ;
+            n4op:crmAnchor crm:E92_Spacetime_Volume ],
         [ void:class owl:NamedIndividual ;
             void:entities 13 ],
         [ void:class prov:Entity ;
@@ -104,12 +123,9 @@
             void:entities 5 ],
         [ void:class owl:Ontology ;
             void:entities 1 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Gemeinde> ;
-            void:entities 318 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/EntdeckungsartType> ;
-            void:entities 12 ],
-        [ void:class <http://w3id.org/bb5kbc/ont/Datierung> ;
-            void:entities 540 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet> ;
+            void:entities 540 ;
+            n4op:crmAnchor crm:E13_Attribute_Assignment ],
         [ void:class <http://fuzzy-sl.squirrel.link/ontology/CertaintyType> ;
             void:entities 4 ],
         [ void:class <http://fuzzy-sl.squirrel.link/ontology/SourceType> ;
@@ -295,11 +311,11 @@
     dcat:version "0.11.0" ;
     foaf:homepage <https://doi.org/10.5281/zenodo.19830968> ;
     schema:sameAs <http://www.wikidata.org/entity/QTODO> ;
-    n4op:exampleQuery <file:///home/claude/buildtree/bb-5kbc-public/classes-with-counts>,
-        <file:///home/claude/buildtree/bb-5kbc-public/sites>,
-        <file:///home/claude/buildtree/bb-5kbc-public/sites-via-crm> .
+    n4op:exampleQuery <file:///C:/git/bb-5kbc-public/classes-with-counts>,
+        <file:///C:/git/bb-5kbc-public/sites>,
+        <file:///C:/git/bb-5kbc-public/sites-via-crm> .
 
-<file:///home/claude/buildtree/bb-5kbc-public/classes-with-counts> a sh:SPARQLSelectExecutable ;
+<file:///C:/git/bb-5kbc-public/classes-with-counts> a sh:SPARQLSelectExecutable ;
     dct:title "Verwendete Klassen mit Anzahl"@de,
         "Classes used, with counts"@en ;
     rdfs:comment "Was diese Sammlung tatsaechlich enthaelt — die Gegenprobe zur void:classPartition-Statistik in den Metadaten."@de,
@@ -314,7 +330,7 @@ SELECT ?class (COUNT(?s) AS ?count) WHERE {
 } GROUP BY ?class ORDER BY DESC(?count)
 """ .
 
-<file:///home/claude/buildtree/bb-5kbc-public/sites> a sh:SPARQLSelectExecutable ;
+<file:///C:/git/bb-5kbc-public/sites> a sh:SPARQLSelectExecutable ;
     dct:title "Fundstellen mit Bezeichnung"@de,
         "Sites with their labels"@en ;
     rdfs:comment "Die Fundstellen selbst, das Rueckgrat des Datensatzes."@de,
@@ -330,7 +346,7 @@ SELECT ?site ?label WHERE {
 } ORDER BY ?label LIMIT 50
 """ .
 
-<file:///home/claude/buildtree/bb-5kbc-public/sites-via-crm> a sh:SPARQLSelectExecutable ;
+<file:///C:/git/bb-5kbc-public/sites-via-crm> a sh:SPARQLSelectExecutable ;
     dct:title "Fundstellen ueber die CIDOC-CRM-Oberklasse"@de,
         "Sites via their CIDOC CRM superclass"@en ;
     rdfs:comment "Prueft, ob die Ausrichtung greift: gefragt wird nach crm:E27_Site, geantwortet wird aus bb5kbc:Fundstelle."@de,
@@ -344,12 +360,6 @@ SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
   ?site a/rdfs:subClassOf* crm:E27_Site
 }
 """ .
-
-<http://w3id.org/bb5kbc/ont/Entdeckung> rdfs:subClassOf crm:E5_Event .
-
-<http://w3id.org/bb5kbc/ont/Fundstelle> rdfs:subClassOf crm:E27_Site .
-
-<http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet> rdfs:subClassOf crm:E13_Attribute_Assignment .
 
 <https://raw.githubusercontent.com/Research-Squirrel-Engineers/bb-5kbc-sites/main/dist/bb5kbc-bundle.ttl> spdx:checksum [ spdx:algorithm spdx:checksumAlgorithm_sha256 ;
             spdx:checksumValue "4e10639d58eb946937b5d93f4089f2d939aa25ca2d86c0478b6e49b843a310cd" ] .

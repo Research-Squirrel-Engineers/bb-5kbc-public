@@ -92,22 +92,7 @@
     }
   ],
   "model": {
-    "bundle": "rdf/bb5kbc-bundle.ttl",
-    "classes": [
-      {
-        "class": "http://w3id.org/bb5kbc/ont/Fundstelle",
-        "crm": "http://www.cidoc-crm.org/cidoc-crm/E27_Site"
-      },
-      {
-        "class": "http://w3id.org/bb5kbc/ont/Entdeckung",
-        "crm": "http://www.cidoc-crm.org/cidoc-crm/E5_Event"
-      },
-      {
-        "class": "http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet",
-        "crm": "http://www.cidoc-crm.org/cidoc-crm/E13_Attribute_Assignment"
-      }
-    ],
-    "properties": []
+    "bundle": "rdf/bb5kbc-bundle.ttl"
   },
   "prefixes": "PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>\nPREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n",
   "queries": [

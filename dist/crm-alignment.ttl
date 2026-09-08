@@ -1,9 +1,0 @@
-@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
-@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
-
-<http://w3id.org/bb5kbc/ont/Entdeckung> rdfs:subClassOf crm:E5_Event .
-
-<http://w3id.org/bb5kbc/ont/Fundstelle> rdfs:subClassOf crm:E27_Site .
-
-<http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet> rdfs:subClassOf crm:E13_Attribute_Assignment .
-
