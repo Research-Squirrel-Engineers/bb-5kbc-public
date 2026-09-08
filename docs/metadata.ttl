@@ -515,10 +515,10 @@ SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
 """ .
 
 <file:///C:/git/bb-5kbc-public/time-slice> a sh:SPARQLSelectExecutable ;
-    dct:title "Was um 4500 v. Chr. bestand"@de,
-        "What existed around 4500 BC"@en ;
-    rdfs:comment "Fundstellen, deren Datierungsintervall das Jahr im Filter enthaelt. Zahl aendern, Run druecken, und das Siedlungsbild wandert."@de,
-        "Sites whose dating interval contains the year in the filter. This is the query to play with: change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000 to -3900 for the Neolithic groups."@en ;
+    dct:title "Was in einem Zeitfenster bestand"@de,
+        "What existed in a window of time"@en ;
+    rdfs:comment "Fundstellen, deren Datierungsintervall sich mit dem Fenster der beiden Regler ueberschneidet. Geprueft wird Ueberschneidung, nicht Enthaltensein: bei so weiten Intervallen ist das die einzige ehrliche Lesart."@de,
+        "Sites whose dating interval overlaps the window set by the two sliders. Move either one and the query re-runs: -4800 to -4750 gives 349 sites, -4400 to -4300 gives 472, -4100 to -3900 gives 296. The test is overlap, not containment, so a site counts if it was in use at any point in the window — with intervals this wide that is the only honest reading. Widen the window to the full range and all 540 come back."@en ;
     sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
 PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
@@ -527,13 +527,15 @@ PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT ?label ?culture ?wkt WHERE {
+  VALUES ?from { -4700 }
+  VALUES ?to   { -4500 }
   ?site rdfs:label ?label ;
         geo:hasGeometry/geo:asWKT ?wkt ;
         bb5kbc:hatKulturelleZuordnung ?kz .
   ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
       bb5kbc:hatDatierung ?d .
   ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
-  FILTER(?st <= -4500 && ?en >= -4500)
+  FILTER(?st <= ?to && ?en >= ?from)
 } ORDER BY ?culture ?label
 """ .
 

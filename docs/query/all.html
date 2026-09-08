@@ -47,6 +47,7 @@
       <span class="timing" id="time-sites-on-a-map"></span>
     </div>
     <div class="view" id="view-sites-on-a-map"></div>
+    <div class="downloads" id="dl-sites-on-a-map"></div>
     <div class="result" id="out-sites-on-a-map"></div>
   </section>
   <section class="query" id="q-culture-chronology">
@@ -65,18 +66,21 @@
       <span class="timing" id="time-culture-chronology"></span>
     </div>
     <div class="view" id="view-culture-chronology"></div>
+    <div class="downloads" id="dl-culture-chronology"></div>
     <div class="result" id="out-culture-chronology"></div>
   </section>
   <section class="query" id="q-time-slice">
-    <h2>3. What existed around 4500 BC</h2>
-<p class="intro">Sites whose dating interval contains the year in the filter. This is the query to play with: change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000 to -3900 for the Neolithic groups.</p>    <textarea class="sparql" id="src-time-slice" spellcheck="false" rows="11">SELECT ?label ?culture ?wkt WHERE {
+    <h2>3. What existed in a window of time</h2>
+<p class="intro">Sites whose dating interval overlaps the window set by the two sliders. Move either one and the query re-runs: -4800 to -4750 gives 349 sites, -4400 to -4300 gives 472, -4100 to -3900 gives 296. The test is overlap, not containment, so a site counts if it was in use at any point in the window — with intervals this wide that is the only honest reading. Widen the window to the full range and all 540 come back.</p>    <textarea class="sparql" id="src-time-slice" spellcheck="false" rows="13">SELECT ?label ?culture ?wkt WHERE {
+  VALUES ?from { -4700 }
+  VALUES ?to   { -4500 }
   ?site rdfs:label ?label ;
         geo:hasGeometry/geo:asWKT ?wkt ;
         bb5kbc:hatKulturelleZuordnung ?kz .
   ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
       bb5kbc:hatDatierung ?d .
   ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
-  FILTER(?st <= -4500 && ?en >= -4500)
+  FILTER(?st <= ?to && ?en >= ?from)
 } ORDER BY ?culture ?label</textarea>
     <div class="query-bar">
       <button class="run" data-q="time-slice" disabled>Run</button>
@@ -84,7 +88,9 @@
       <a class="rq" href="time-slice.html">own page</a>
       <span class="timing" id="time-time-slice"></span>
     </div>
+    <div class="controls" data-controls="time-slice"></div>
     <div class="view" id="view-time-slice"></div>
+    <div class="downloads" id="dl-time-slice"></div>
     <div class="result" id="out-time-slice"></div>
   </section>
   <section class="query" id="q-discovery-and-type">
@@ -99,6 +105,7 @@
       <span class="timing" id="time-discovery-and-type"></span>
     </div>
     <div class="view" id="view-discovery-and-type"></div>
+    <div class="downloads" id="dl-discovery-and-type"></div>
     <div class="result" id="out-discovery-and-type"></div>
   </section>
   <section class="query" id="q-dating-precision">
@@ -118,6 +125,7 @@
       <span class="timing" id="time-dating-precision"></span>
     </div>
     <div class="view" id="view-dating-precision"></div>
+    <div class="downloads" id="dl-dating-precision"></div>
     <div class="result" id="out-dating-precision"></div>
   </section>
   <section class="query" id="q-locational-confidence">
@@ -136,6 +144,7 @@
       <span class="timing" id="time-locational-confidence"></span>
     </div>
     <div class="view" id="view-locational-confidence"></div>
+    <div class="downloads" id="dl-locational-confidence"></div>
     <div class="result" id="out-locational-confidence"></div>
   </section>
   <section class="query" id="q-uncertain-attributions">
@@ -152,6 +161,7 @@
       <span class="timing" id="time-uncertain-attributions"></span>
     </div>
     <div class="view" id="view-uncertain-attributions"></div>
+    <div class="downloads" id="dl-uncertain-attributions"></div>
     <div class="result" id="out-uncertain-attributions"></div>
   </section>
   <section class="query" id="q-literature-coverage">
@@ -169,6 +179,7 @@
       <span class="timing" id="time-literature-coverage"></span>
     </div>
     <div class="view" id="view-literature-coverage"></div>
+    <div class="downloads" id="dl-literature-coverage"></div>
     <div class="result" id="out-literature-coverage"></div>
   </section>
   <section class="query" id="q-georeferencing-source">
@@ -184,6 +195,7 @@
       <span class="timing" id="time-georeferencing-source"></span>
     </div>
     <div class="view" id="view-georeferencing-source"></div>
+    <div class="downloads" id="dl-georeferencing-source"></div>
     <div class="result" id="out-georeferencing-source"></div>
   </section>
   <section class="query" id="q-cross-border">
@@ -199,6 +211,7 @@
       <span class="timing" id="time-cross-border"></span>
     </div>
     <div class="view" id="view-cross-border"></div>
+    <div class="downloads" id="dl-cross-border"></div>
     <div class="result" id="out-cross-border"></div>
   </section>
   <section class="query" id="q-classes-with-counts">
@@ -213,6 +226,7 @@
       <span class="timing" id="time-classes-with-counts"></span>
     </div>
     <div class="view" id="view-classes-with-counts"></div>
+    <div class="downloads" id="dl-classes-with-counts"></div>
     <div class="result" id="out-classes-with-counts"></div>
   </section>
   <section class="query" id="q-sites-via-crm">
@@ -227,6 +241,7 @@
       <span class="timing" id="time-sites-via-crm"></span>
     </div>
     <div class="view" id="view-sites-via-crm"></div>
+    <div class="downloads" id="dl-sites-via-crm"></div>
     <div class="result" id="out-sites-via-crm"></div>
   </section>
 
@@ -239,10 +254,44 @@
 </div>
 
 <script type="module">
-import { boot, ask, renderTable, hasGeometry, renderMap, VIEWS } from './runner.js';
+import { boot, ask, renderTable, hasGeometry, renderMap, VIEWS,
+         readControl, applyControls, offerDownloads } from './runner.js';
 
-const QUERIES = {"sites-on-a-map": "SELECT ?label ?culture ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} ORDER BY ?culture ?label", "culture-chronology": "SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)\n       (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n} GROUP BY ?culture ORDER BY ?from", "time-slice": "SELECT ?label ?culture ?wkt WHERE {\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= -4500 && ?en >= -4500)\n} ORDER BY ?culture ?label", "discovery-and-type": "SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .\n} GROUP BY ?mode ORDER BY DESC(?sites)", "dating-precision": "SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)\n       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  BIND(?en - ?st AS ?span)\n} GROUP BY ?culture ORDER BY ?widest", "locational-confidence": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence", "uncertain-attributions": "SELECT ?label ?type ?wkt WHERE {\n  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt .\n  ?t fsl:certaintyDesc \"uncertain\"@en ; rdfs:label ?type .\n} ORDER BY ?label", "literature-coverage": "SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)\n       (COUNT(DISTINCT ?pub) AS ?published) WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .\n  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }\n} GROUP BY ?kreis ORDER BY DESC(?sites)", "georeferencing-source": "SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .\n  ?a fsl:hasSourceType/rdfs:label ?source .\n} GROUP BY ?source ORDER BY DESC(?sites)", "cross-border": "SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} GROUP BY ?culture ?land ORDER BY DESC(?sites)", "classes-with-counts": "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)", "sites-via-crm": "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n}"};
-const SPEC    = {"sites-on-a-map": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}}, "culture-chronology": {"view": "intervals", "cols": {"from": "from", "to": "to", "label": "culture"}}, "time-slice": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}}, "discovery-and-type": {"view": "barchart", "cols": {"category": "mode", "value": "sites"}}, "dating-precision": {"view": "scatter", "cols": {"x": "sites", "y": "widest", "label": "culture"}}, "locational-confidence": {"view": "map", "cols": {"label": "label", "colour": "confidence", "wkt": ""}}, "uncertain-attributions": {"view": "map", "cols": {"label": "label", "colour": "type", "wkt": ""}}, "literature-coverage": {"view": "barchart", "cols": {"category": "kreis", "value": "sites"}}, "georeferencing-source": {"view": "barchart", "cols": {"category": "source", "value": "sites"}}, "cross-border": {"view": "barchart", "cols": {"category": "culture", "value": "sites"}}, "classes-with-counts": {"view": "table", "cols": {}}, "sites-via-crm": {"view": "table", "cols": {}}};
+const QUERIES = {"sites-on-a-map": "SELECT ?label ?culture ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} ORDER BY ?culture ?label", "culture-chronology": "SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)\n       (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n} GROUP BY ?culture ORDER BY ?from", "time-slice": "SELECT ?label ?culture ?wkt WHERE {\n  VALUES ?from { -4700 }\n  VALUES ?to   { -4500 }\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= ?to && ?en >= ?from)\n} ORDER BY ?culture ?label", "discovery-and-type": "SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .\n} GROUP BY ?mode ORDER BY DESC(?sites)", "dating-precision": "SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)\n       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  BIND(?en - ?st AS ?span)\n} GROUP BY ?culture ORDER BY ?widest", "locational-confidence": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence", "uncertain-attributions": "SELECT ?label ?type ?wkt WHERE {\n  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt .\n  ?t fsl:certaintyDesc \"uncertain\"@en ; rdfs:label ?type .\n} ORDER BY ?label", "literature-coverage": "SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)\n       (COUNT(DISTINCT ?pub) AS ?published) WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .\n  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }\n} GROUP BY ?kreis ORDER BY DESC(?sites)", "georeferencing-source": "SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .\n  ?a fsl:hasSourceType/rdfs:label ?source .\n} GROUP BY ?source ORDER BY DESC(?sites)", "cross-border": "SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} GROUP BY ?culture ?land ORDER BY DESC(?sites)", "classes-with-counts": "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)", "sites-via-crm": "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n}"};
+const SPEC    = {"sites-on-a-map": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}, "controls": []}, "culture-chronology": {"view": "intervals", "cols": {"from": "from", "to": "to", "label": "culture"}, "controls": []}, "time-slice": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}, "controls": [{"var": "from", "label": "From (BC)", "min": -8000, "max": -3800, "step": 50}, {"var": "to", "label": "To (BC)", "min": -8000, "max": -3800, "step": 50}]}, "discovery-and-type": {"view": "barchart", "cols": {"category": "mode", "value": "sites"}, "controls": []}, "dating-precision": {"view": "scatter", "cols": {"x": "sites", "y": "widest", "label": "culture"}, "controls": []}, "locational-confidence": {"view": "map", "cols": {"label": "label", "colour": "confidence", "wkt": ""}, "controls": []}, "uncertain-attributions": {"view": "map", "cols": {"label": "label", "colour": "type", "wkt": ""}, "controls": []}, "literature-coverage": {"view": "barchart", "cols": {"category": "kreis", "value": "sites"}, "controls": []}, "georeferencing-source": {"view": "barchart", "cols": {"category": "source", "value": "sites"}, "controls": []}, "cross-border": {"view": "barchart", "cols": {"category": "culture", "value": "sites"}, "controls": []}, "classes-with-counts": {"view": "table", "cols": {}, "controls": []}, "sites-via-crm": {"view": "table", "cols": {}, "controls": []}};
+
+function buildControls(id) {
+  const host = document.querySelector(`[data-controls="${id}"]`);
+  const defs = SPEC[id].controls || [];
+  if (!host || !defs.length) return;
+  const src = document.getElementById('src-' + id);
+  host.innerHTML = defs.map(c => {
+    const v = readControl(src.value, c.var);
+    return `<label class="ctl"><span>${c.label}</span>` +
+      `<input type="range" data-var="${c.var}" min="${c.min}" max="${c.max}" ` +
+      `step="${c.step}" value="${v}"><output data-out="${c.var}">${v}</output></label>`;
+  }).join('');
+  host.querySelectorAll('input[type=range]').forEach(i => {
+    i.addEventListener('input', () => {
+      host.querySelector(`[data-out="${i.dataset.var}"]`).textContent = i.value;
+    });
+    i.addEventListener('change', () => { writeBack(id); run(id); });
+  });
+}
+
+/* Write the slider values back into the query itself, so that what runs is
+   what the reader can see and copy. */
+function writeBack(id) {
+  const src = document.getElementById('src-' + id);
+  src.value = applyControls(src.value, controlValues(id));
+}
+
+function controlValues(id) {
+  const host = document.querySelector(`[data-controls="${id}"]`);
+  if (!host) return [];
+  return [...host.querySelectorAll('input[type=range]')]
+    .map(i => ({ var: i.dataset.var, value: i.value }));
+}
 
 async function run(id) {
   const btn = document.querySelector(`button.run[data-q="${id}"]`);
@@ -259,6 +308,7 @@ async function run(id) {
     if (spec.view !== 'table' && VIEWS[spec.view]) VIEWS[spec.view](viewEl, data, spec.cols);
     else if (hasGeometry(data)) renderMap(viewEl, data, spec.cols);
     renderTable(out, data);
+    offerDownloads(document.getElementById('dl-' + id), data, id);
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
     timing.textContent = data.n ? `${dt}s over ${data.n} triples` : `${dt}s`;
   } catch (err) {
@@ -277,7 +327,10 @@ document.querySelectorAll('button.reset').forEach(b =>
     document.getElementById('out-' + id).innerHTML = '';
     document.getElementById('view-' + id).innerHTML = '';
     document.getElementById('time-' + id).textContent = '';
+    document.getElementById('dl-' + id).innerHTML = '';
+    buildControls(id);
   }));
+Object.keys(SPEC).forEach(buildControls);
 boot();
 </script>
 </body>

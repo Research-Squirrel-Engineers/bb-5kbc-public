@@ -9,7 +9,7 @@
       integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
         integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-<title>What existed around 4500 BC &mdash; BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC</title>
+<title>What existed in a window of time &mdash; BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC</title>
 </head>
 <body>
 <div class="container">
@@ -22,8 +22,8 @@
   <p class="meta"><a href="index.html">&larr; All queries</a></p>
 
   <header class="page-head">
-    <h1>What existed around 4500 BC</h1>
-<p class="intro">Sites whose dating interval contains the year in the filter. This is the query to play with: change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000 to -3900 for the Neolithic groups.</p>  </header>
+    <h1>What existed in a window of time</h1>
+<p class="intro">Sites whose dating interval overlaps the window set by the two sliders. Move either one and the query re-runs: -4800 to -4750 gives 349 sites, -4400 to -4300 gives 472, -4100 to -3900 gives 296. The test is overlap, not containment, so a site counts if it was in use at any point in the window — with intervals this wide that is the only honest reading. Widen the window to the full range and all 540 come back.</p>  </header>
 
   <div class="status">
     <span class="dot" data-dot></span>
@@ -32,14 +32,16 @@
   <p class="note" data-graph-note hidden></p>
 
   <section class="query">
-    <textarea class="sparql" id="src" spellcheck="false" rows="11">SELECT ?label ?culture ?wkt WHERE {
+    <textarea class="sparql" id="src" spellcheck="false" rows="13">SELECT ?label ?culture ?wkt WHERE {
+  VALUES ?from { -4700 }
+  VALUES ?to   { -4500 }
   ?site rdfs:label ?label ;
         geo:hasGeometry/geo:asWKT ?wkt ;
         bb5kbc:hatKulturelleZuordnung ?kz .
   ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
       bb5kbc:hatDatierung ?d .
   ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
-  FILTER(?st <= -4500 && ?en >= -4500)
+  FILTER(?st <= ?to && ?en >= ?from)
 } ORDER BY ?culture ?label</textarea>
     <div class="query-bar">
       <button class="run" id="run" disabled>Run</button>
@@ -47,7 +49,9 @@
       <a class="rq" href="rq/time-slice.rq" download>time-slice.rq</a>
       <span class="timing" id="timing"></span>
     </div>
+    <div class="controls" id="controls"></div>
     <div class="view" id="view"></div>
+    <div class="downloads" id="downloads"></div>
     <div class="result" id="out"></div>
   </section>
 
@@ -60,16 +64,54 @@
 </div>
 
 <script type="module">
-import { boot, ask, renderTable, hasGeometry, renderMap, VIEWS } from './runner.js';
+import { boot, ask, renderTable, hasGeometry, renderMap, VIEWS,
+         readControl, applyControls, offerDownloads } from './runner.js';
 
 const VIEW = "map";
 const COLS = {"label": "label", "colour": "culture", "wkt": ""};
-const ORIGINAL = "SELECT ?label ?culture ?wkt WHERE {\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= -4500 && ?en >= -4500)\n} ORDER BY ?culture ?label";
+const CONTROLS = [{"var": "from", "label": "From (BC)", "min": -8000, "max": -3800, "step": 50}, {"var": "to", "label": "To (BC)", "min": -8000, "max": -3800, "step": 50}];
+const ORIGINAL = "SELECT ?label ?culture ?wkt WHERE {\n  VALUES ?from { -4700 }\n  VALUES ?to   { -4500 }\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= ?to && ?en >= ?from)\n} ORDER BY ?culture ?label";
+const ID = "time-slice";
 const src = document.getElementById('src');
 const out = document.getElementById('out');
 const viewEl = document.getElementById('view');
 const timing = document.getElementById('timing');
 const btn = document.getElementById('run');
+const dl = document.getElementById('downloads');
+
+/* Sliders are built from the query, not from the config alone: the starting
+   value is whatever the VALUES clause says, so editing the query and pressing
+   Reset keeps the two in step. */
+function buildControls() {
+  const host = document.getElementById('controls');
+  if (!host || !CONTROLS.length) return;
+  host.innerHTML = CONTROLS.map(c => {
+    const v = readControl(src.value, c.var);
+    return `<label class="ctl"><span>${c.label}</span>` +
+      `<input type="range" data-var="${c.var}" min="${c.min}" max="${c.max}" ` +
+      `step="${c.step}" value="${v}"><output data-out="${c.var}">${v}</output></label>`;
+  }).join('');
+  host.querySelectorAll('input[type=range]').forEach(i => {
+    i.addEventListener('input', () => {
+      host.querySelector(`[data-out="${i.dataset.var}"]`).textContent = i.value;
+    });
+    i.addEventListener('change', () => { writeBack(); run(); });
+  });
+}
+
+/* Write the slider values back into the query itself, so that what runs is
+   what the reader can see and copy. A hidden second version of the query would
+   make the .rq link and the textarea disagree the moment a slider moved. */
+function writeBack() {
+  src.value = applyControls(src.value, controlValues());
+}
+
+function controlValues() {
+  const host = document.getElementById('controls');
+  if (!host) return [];
+  return [...host.querySelectorAll('input[type=range]')]
+    .map(i => ({ var: i.dataset.var, value: i.value }));
+}
 
 async function run() {
   btn.disabled = true;
@@ -84,9 +126,11 @@ async function run() {
     if (VIEW !== 'table' && VIEWS[VIEW]) VIEWS[VIEW](viewEl, data, COLS);
     else if (hasGeometry(data)) renderMap(viewEl, data, COLS);
     renderTable(out, data);
+    offerDownloads(dl, data, ID);
     const dt = ((performance.now() - t0) / 1000).toFixed(1);
     timing.textContent = data.n ? `${dt}s over ${data.n} triples` : `${dt}s`;
   } catch (err) {
+    dl.innerHTML = '';
     /* Show the real error. A malformed query is the normal case here — people
        are meant to edit these — so the message has to be the actual error. */
     out.innerHTML = `<pre class="error">${err.message}</pre>`;
@@ -97,8 +141,11 @@ async function run() {
 
 btn.addEventListener('click', run);
 document.getElementById('reset').addEventListener('click', () => {
-  src.value = ORIGINAL; out.innerHTML = ''; viewEl.innerHTML = ''; timing.textContent = '';
+  src.value = ORIGINAL; out.innerHTML = ''; viewEl.innerHTML = '';
+  dl.innerHTML = ''; timing.textContent = '';
+  buildControls();
 });
+buildControls();
 boot();
 </script>
 </body>

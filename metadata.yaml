@@ -226,27 +226,36 @@ queries:
   - id: time-slice
     view: map
     view_columns: {label: label, colour: culture}
+    controls:
+      - {var: from, label: "From (BC)", min: -8000, max: -3800, step: 50}
+      - {var: to,   label: "To (BC)",   min: -8000, max: -3800, step: 50}
     title:
-      en: What existed around 4500 BC
-      de: Was um 4500 v. Chr. bestand
+      en: What existed in a window of time
+      de: Was in einem Zeitfenster bestand
     intro:
       en: >-
-        Sites whose dating interval contains the year in the filter. This is
-        the query to play with: change -4500 and press Run again, and the
-        settlement pattern moves. The scale runs from about -5000 to -3900 for
-        the Neolithic groups.
+        Sites whose dating interval overlaps the window set by the two sliders.
+        Move either one and the query re-runs: -4800 to -4750 gives 349 sites,
+        -4400 to -4300 gives 472, -4100 to -3900 gives 296. The test is overlap,
+        not containment, so a site counts if it was in use at any point in the
+        window — with intervals this wide that is the only honest reading.
+        Widen the window to the full range and all 540 come back.
       de: >-
-        Fundstellen, deren Datierungsintervall das Jahr im Filter enthaelt.
-        Zahl aendern, Run druecken, und das Siedlungsbild wandert.
+        Fundstellen, deren Datierungsintervall sich mit dem Fenster der beiden
+        Regler ueberschneidet. Geprueft wird Ueberschneidung, nicht
+        Enthaltensein: bei so weiten Intervallen ist das die einzige ehrliche
+        Lesart.
     sparql: |
       SELECT ?label ?culture ?wkt WHERE {
+        VALUES ?from { -4700 }
+        VALUES ?to   { -4500 }
         ?site rdfs:label ?label ;
               geo:hasGeometry/geo:asWKT ?wkt ;
               bb5kbc:hatKulturelleZuordnung ?kz .
         ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
             bb5kbc:hatDatierung ?d .
         ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
-        FILTER(?st <= -4500 && ?en >= -4500)
+        FILTER(?st <= ?to && ?en >= ?from)
       } ORDER BY ?culture ?label
 
   - id: discovery-and-type

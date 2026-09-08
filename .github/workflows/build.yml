@@ -5,6 +5,15 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# A reusable workflow cannot grant itself more than its caller has, and this
+# repository issues a read-only token by default. Without these three the run
+# is refused before it starts: "requesting 'id-token: write', but is only
+# allowed 'id-token: none'".
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
 jobs:
   collection:
     uses: n4o-rse/n4o-kg-profile/.github/workflows/collection.yml@v1

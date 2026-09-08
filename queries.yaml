@@ -78,18 +78,32 @@ queries:
     \ ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n\
     } GROUP BY ?culture ORDER BY ?from\n"
 - id: time-slice
-  title: What existed around 4500 BC
-  intro: 'Sites whose dating interval contains the year in the filter. This is the query to play with:
-    change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000
-    to -3900 for the Neolithic groups.'
+  title: What existed in a window of time
+  intro: 'Sites whose dating interval overlaps the window set by the two sliders. Move either one and
+    the query re-runs: -4800 to -4750 gives 349 sites, -4400 to -4300 gives 472, -4100 to -3900 gives
+    296. The test is overlap, not containment, so a site counts if it was in use at any point in the window
+    — with intervals this wide that is the only honest reading. Widen the window to the full range and
+    all 540 come back.'
   view: map
   view_columns:
     label: label
     colour: culture
-  sparql: "SELECT ?label ?culture ?wkt WHERE {\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT\
-    \ ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture\
-    \ ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n\
-    \  FILTER(?st <= -4500 && ?en >= -4500)\n} ORDER BY ?culture ?label\n"
+  controls:
+  - var: from
+    label: From (BC)
+    min: -8000
+    max: -3800
+    step: 50
+  - var: to
+    label: To (BC)
+    min: -8000
+    max: -3800
+    step: 50
+  sparql: "SELECT ?label ?culture ?wkt WHERE {\n  VALUES ?from { -4700 }\n  VALUES ?to   { -4500 }\n \
+    \ ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung\
+    \ ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d\
+    \ bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= ?to && ?en >= ?from)\n} ORDER\
+    \ BY ?culture ?label\n"
 - id: discovery-and-type
   title: How the sites were found
   intro: 'The site type is known almost only where somebody excavated: stray finds and surface collections

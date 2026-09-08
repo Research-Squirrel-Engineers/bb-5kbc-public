@@ -101,6 +101,17 @@ views are available per query (`intervals`, `barchart`, `scatter`), declared in
 table, never instead of it: an edit that drops the column a view needs makes it
 say so rather than go blank.
 
+`time-slice` carries two sliders. They rewrite the `VALUES ?from` / `VALUES ?to`
+clauses in the query itself rather than a hidden copy, so what runs is what you
+can see and copy. The test is interval *overlap*, not containment: a site
+counts if it was in use at any point in the window, which with intervals this
+wide is the only honest reading. -4800 to -4750 gives 349 sites, -4400 to -4300
+gives 472, -4100 to -3900 gives 296.
+
+Every result offers a CSV, and a GeoJSON as well when it carries coordinates —
+built in the browser from what is on screen, so a narrowed query exports the
+narrowed result.
+
 One trap worth knowing before editing: `bb5kbc:hatDatierung` hangs on the
 `KulturelleZuordnung`, not on the `Fundstelle`, because a site with two
 cultural attributions has two datings. `?site bb5kbc:hatDatierung ?d` returns
