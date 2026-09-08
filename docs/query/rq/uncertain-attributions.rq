@@ -1,0 +1,17 @@
+# Where the record hedges
+# Values the source marked with a question mark are not quietly cleaned up in
+# this dataset: they carry fsl:certaintyDesc "uncertain". These are the site
+# types the excavator would not commit to.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?type ?wkt WHERE {
+  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt .
+  ?t fsl:certaintyDesc "uncertain"@en ; rdfs:label ?type .
+} ORDER BY ?label

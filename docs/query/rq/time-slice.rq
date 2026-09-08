@@ -1,0 +1,22 @@
+# What existed around 4500 BC
+# Sites whose dating interval contains the year in the filter. This is the
+# query to play with: change -4500 and press Run again, and the settlement
+# pattern moves. The scale runs from about -5000 to -3900 for the Neolithic
+# groups.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?culture ?wkt WHERE {
+  ?site rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+  FILTER(?st <= -4500 && ?en >= -4500)
+} ORDER BY ?culture ?label

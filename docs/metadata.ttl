@@ -310,18 +310,29 @@
     dcat:landingPage <https://research-squirrel-engineers.github.io/bb-5kbc-sites/> ;
     dcat:version "0.11.0" ;
     foaf:homepage <https://doi.org/10.5281/zenodo.19830968> ;
-    schema:sameAs <http://www.wikidata.org/entity/QTODO> ;
+    schema:sameAs <http://www.wikidata.org/entity/Q141363969> ;
     n4op:exampleQuery <file:///C:/git/bb-5kbc-public/classes-with-counts>,
-        <file:///C:/git/bb-5kbc-public/sites>,
-        <file:///C:/git/bb-5kbc-public/sites-via-crm> .
+        <file:///C:/git/bb-5kbc-public/cross-border>,
+        <file:///C:/git/bb-5kbc-public/culture-chronology>,
+        <file:///C:/git/bb-5kbc-public/dating-precision>,
+        <file:///C:/git/bb-5kbc-public/discovery-and-type>,
+        <file:///C:/git/bb-5kbc-public/georeferencing-source>,
+        <file:///C:/git/bb-5kbc-public/literature-coverage>,
+        <file:///C:/git/bb-5kbc-public/locational-confidence>,
+        <file:///C:/git/bb-5kbc-public/sites-on-a-map>,
+        <file:///C:/git/bb-5kbc-public/sites-via-crm>,
+        <file:///C:/git/bb-5kbc-public/time-slice>,
+        <file:///C:/git/bb-5kbc-public/uncertain-attributions> .
 
 <file:///C:/git/bb-5kbc-public/classes-with-counts> a sh:SPARQLSelectExecutable ;
     dct:title "Verwendete Klassen mit Anzahl"@de,
         "Classes used, with counts"@en ;
-    rdfs:comment "Was diese Sammlung tatsaechlich enthaelt — die Gegenprobe zur void:classPartition-Statistik in den Metadaten."@de,
-        "What this collection actually contains. The counterpart to the void:classPartition statistics in the metadata: if the two disagree, the metadata is stale."@en ;
+    rdfs:comment "Was die Sammlung tatsaechlich enthaelt — die Gegenprobe zur void:classPartition-Statistik."@de,
+        "What this collection actually contains — the counterpart to the void:classPartition statistics in the metadata. If the two disagree, the metadata is stale."@en ;
     sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
@@ -330,35 +341,219 @@ SELECT ?class (COUNT(?s) AS ?count) WHERE {
 } GROUP BY ?class ORDER BY DESC(?count)
 """ .
 
-<file:///C:/git/bb-5kbc-public/sites> a sh:SPARQLSelectExecutable ;
-    dct:title "Fundstellen mit Bezeichnung"@de,
-        "Sites with their labels"@en ;
-    rdfs:comment "Die Fundstellen selbst, das Rueckgrat des Datensatzes."@de,
-        "The archaeological sites themselves, the backbone of the dataset."@en ;
+<file:///C:/git/bb-5kbc-public/cross-border> a sh:SPARQLSelectExecutable ;
+    dct:title "Deutsche und polnische Fundstellen je Kulturgruppe"@de,
+        "German and Polish sites per cultural group"@en ;
+    rdfs:comment "Der Datensatz ueberschreitet eine moderne Grenze, die dem 5. Jahrtausend v. Chr. nichts bedeutet."@de,
+        "The dataset straddles a modern border that means nothing to the fifth millennium BC. Grouping by country and culture shows which groups the border cuts through and which sit wholly on one side — a property of research traditions and of the source databases as much as of prehistory."@en ;
     sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
-SELECT ?site ?label WHERE {
+SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+} GROUP BY ?culture ?land ORDER BY DESC(?sites)
+""" .
+
+<file:///C:/git/bb-5kbc-public/culture-chronology> a sh:SPARQLSelectExecutable ;
+    dct:title "Die Kulturgruppen auf der Zeitachse"@de,
+        "The cultural groups on a time axis"@en ;
+    rdfs:comment "Wo jede Kulturgruppe zeitlich liegt und wie viele Fundstellen sie traegt. Der Mesolithikum-Balken umspannt vier Jahrtausende."@de,
+        "Where each cultural group sits in time, and how many sites carry it. The Mesolithic bar spans four thousand years and dwarfs everything else: that is the record, not a drawing error. Add FILTER(?st >= -5500) to see the Neolithic groups at a readable scale."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)
+       (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+} GROUP BY ?culture ORDER BY ?from
+""" .
+
+<file:///C:/git/bb-5kbc-public/dating-precision> a sh:SPARQLSelectExecutable ;
+    dct:title "Wie scharf jede Gruppe datiert ist"@de,
+        "How sharply each group is dated"@en ;
+    rdfs:comment "Breite des Datierungsintervalls je Kulturgruppe gegen die Anzahl der Fundstellen."@de,
+        "The width of the dating interval, per cultural group, against the number of sites. A group in the lower right is both well represented and tightly dated; one at the top is carried by an interval so wide that little follows from it."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)
+       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {
+  ?site bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+  BIND(?en - ?st AS ?span)
+} GROUP BY ?culture ORDER BY ?widest
+""" .
+
+<file:///C:/git/bb-5kbc-public/discovery-and-type> a sh:SPARQLSelectExecutable ;
+    dct:title "Wie die Fundstellen entdeckt wurden"@de,
+        "How the sites were found"@en ;
+    rdfs:comment "Der Fundstellentyp ist fast nur dort bekannt, wo gegraben wurde — eine Aussage ueber die Forschungsgeschichte, nicht ueber die Vorgeschichte."@de,
+        "The site type is known almost only where somebody excavated: stray finds and surface collections account for most of the record and leave the type unknown. That is a fact about research history rather than about prehistory, and it belongs beside every distribution map here. Group by ?type as well to see the cross-tabulation."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .
+} GROUP BY ?mode ORDER BY DESC(?sites)
+""" .
+
+<file:///C:/git/bb-5kbc-public/georeferencing-source> a sh:SPARQLSelectExecutable ;
+    dct:title "Woher die Koordinaten stammen"@de,
+        "Where the coordinates came from"@en ;
+    rdfs:comment "Jede Koordinate stammt aus einer Georeferenzierungs-Aktivitaet, die ihre Quelle mitfuehrt."@de,
+        "Every coordinate in this dataset was assigned by a georeferencing activity that records its own source. Provenance of the geometry, not of the site."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .
+  ?a fsl:hasSourceType/rdfs:label ?source .
+} GROUP BY ?source ORDER BY DESC(?sites)
+""" .
+
+<file:///C:/git/bb-5kbc-public/literature-coverage> a sh:SPARQLSelectExecutable ;
+    dct:title "Fundstellen je Kreis, und wie viele publiziert sind"@de,
+        "Sites per district, and how many are published"@en ;
+    rdfs:comment "Wo der Bestand dicht ist und wo die Literatur duenn wird."@de,
+        "Where the corpus is dense and where the literature is thin. A district with many sites and few publications is not necessarily under-researched — it may be that its excavations are reported in a form the source database does not cite."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)
+       (COUNT(DISTINCT ?pub) AS ?published) WHERE {
   ?site a bb5kbc:Fundstelle ;
-        rdfs:label ?label
-} ORDER BY ?label LIMIT 50
+        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .
+  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }
+} GROUP BY ?kreis ORDER BY DESC(?sites)
+""" .
+
+<file:///C:/git/bb-5kbc-public/locational-confidence> a sh:SPARQLSelectExecutable ;
+    dct:title "Wie gut jede Fundstelle verortet ist"@de,
+        "How well each site is located"@en ;
+    rdfs:comment "Dieselben Punkte, gefaerbt nach FSL-Verortungsguete statt nach Kultur. Eine Haeufung von Q24 ist eine Haeufung von Mittelpunkten."@de,
+        "The same points as the first map, coloured by the FSL confidence item instead of by culture: Q23 taken directly from the database, Q15 locatable to a district, Q24 only to a municipality centroid. A cluster of Q24 is a cluster of centroids, not a cluster of settlement."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?confidence ?accuracy ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        fsl:certaintyLevel ?cl ;
+        bb5kbc:hatGenauigkeit ?accuracy .
+  BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
+} ORDER BY ?confidence
+""" .
+
+<file:///C:/git/bb-5kbc-public/sites-on-a-map> a sh:SPARQLSelectExecutable ;
+    dct:title "Die Fundstellen auf der Karte"@de,
+        "The sites, on a map"@en ;
+    rdfs:comment "Jede Fundstelle mit ihrer kulturellen Zuordnung, als Karte ueber der Tabelle."@de,
+        "Every site with its cultural attribution. Any result carrying a coordinate is drawn on a map above the table, whatever else the query asks for — so an edit that adds a filter narrows the map with it."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?culture ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+} ORDER BY ?culture ?label
 """ .
 
 <file:///C:/git/bb-5kbc-public/sites-via-crm> a sh:SPARQLSelectExecutable ;
     dct:title "Fundstellen ueber die CIDOC-CRM-Oberklasse"@de,
         "Sites via their CIDOC CRM superclass"@en ;
-    rdfs:comment "Prueft, ob die Ausrichtung greift: gefragt wird nach crm:E27_Site, geantwortet wird aus bb5kbc:Fundstelle."@de,
-        "Checks that the alignment works: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle. This is what makes the collection queryable alongside other N4O collections that never heard of this ontology."@en ;
+    rdfs:comment "Prueft, ob die Ausrichtung haelt: gefragt wird nach crm:E27_Site, geantwortet aus bb5kbc:Fundstelle."@de,
+        "Checks that the alignment holds: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle. This is what lets the collection be queried alongside other N4O collections that never heard of this ontology."@en ;
     sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
 SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
   ?site a/rdfs:subClassOf* crm:E27_Site
 }
+""" .
+
+<file:///C:/git/bb-5kbc-public/time-slice> a sh:SPARQLSelectExecutable ;
+    dct:title "Was um 4500 v. Chr. bestand"@de,
+        "What existed around 4500 BC"@en ;
+    rdfs:comment "Fundstellen, deren Datierungsintervall das Jahr im Filter enthaelt. Zahl aendern, Run druecken, und das Siedlungsbild wandert."@de,
+        "Sites whose dating interval contains the year in the filter. This is the query to play with: change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000 to -3900 for the Neolithic groups."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?culture ?wkt WHERE {
+  ?site rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+  FILTER(?st <= -4500 && ?en >= -4500)
+} ORDER BY ?culture ?label
+""" .
+
+<file:///C:/git/bb-5kbc-public/uncertain-attributions> a sh:SPARQLSelectExecutable ;
+    dct:title "Wo die Quellen zoegern"@de,
+        "Where the record hedges"@en ;
+    rdfs:comment "Mit Fragezeichen markierte Werte werden nicht stillschweigend bereinigt, sondern tragen fsl:certaintyDesc \"uncertain\"."@de,
+        "Values the source marked with a question mark are not quietly cleaned up in this dataset: they carry fsl:certaintyDesc \"uncertain\". These are the site types the excavator would not commit to."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?type ?wkt WHERE {
+  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt .
+  ?t fsl:certaintyDesc "uncertain"@en ; rdfs:label ?type .
+} ORDER BY ?label
 """ .
 
 <https://raw.githubusercontent.com/Research-Squirrel-Engineers/bb-5kbc-sites/main/dist/bb5kbc-bundle.ttl> spdx:checksum [ spdx:algorithm spdx:checksumAlgorithm_sha256 ;

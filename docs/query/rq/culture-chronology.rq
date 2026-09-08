@@ -1,0 +1,20 @@
+# The cultural groups on a time axis
+# Where each cultural group sits in time, and how many sites carry it. The
+# Mesolithic bar spans four thousand years and dwarfs everything else: that is
+# the record, not a drawing error. Add FILTER(?st >= -5500) to see the
+# Neolithic groups at a readable scale.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)
+       (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+} GROUP BY ?culture ORDER BY ?from

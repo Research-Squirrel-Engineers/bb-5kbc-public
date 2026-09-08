@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<title>All queries &mdash; BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC</title>
+</head>
+<body>
+<div class="container">
+  <nav class="nav">
+    <a href="../index.html">Collection</a>
+    <a href="index.html">Queries</a>
+    <a href="../map.html">Map</a>
+  </nav>
+
+  <header class="page-head">
+    <h1>BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC</h1>
+<p class="intro">Linked Open Data representation of some 540 archaeological sites in Brandenburg, East Germany and West Poland dating to around 5000 BC, with dating, cultural attribution, discovery events and georeferencing. The application ontology aligns with CIDOC CRM and its extensions CRMgeo, CRMsci and CRMarchaeo, with FSL for fuzzy statements and PROV-O for the provenance of the pipeline itself.</p>    <p class="note">
+      Every query on one page. One at a time, with its own address, is in
+      <a href="index.html">the catalogue</a>.
+    </p>
+  </header>
+
+  <div class="status">
+    <span class="dot" data-dot></span>
+    <span data-status-text>Starting&hellip;</span>
+  </div>
+  <p class="note" data-graph-note hidden></p>
+
+  <section class="query" id="q-sites-on-a-map">
+    <h2>1. The sites, on a map</h2>
+<p class="intro">Every site with its cultural attribution. Any result carrying a coordinate is drawn on a map above the table, whatever else the query asks for — so an edit that adds a filter narrows the map with it.</p>    <textarea class="sparql" id="src-sites-on-a-map" spellcheck="false" rows="8">SELECT ?label ?culture ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+} ORDER BY ?culture ?label</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="sites-on-a-map" disabled>Run</button>
+      <button class="reset" data-q="sites-on-a-map">Reset</button>
+      <a class="rq" href="sites-on-a-map.html">own page</a>
+      <span class="timing" id="time-sites-on-a-map"></span>
+    </div>
+    <div class="view" id="view-sites-on-a-map"></div>
+    <div class="result" id="out-sites-on-a-map"></div>
+  </section>
+  <section class="query" id="q-culture-chronology">
+    <h2>2. The cultural groups on a time axis</h2>
+<p class="intro">Where each cultural group sits in time, and how many sites carry it. The Mesolithic bar spans four thousand years and dwarfs everything else: that is the record, not a drawing error. Add FILTER(?st >= -5500) to see the Neolithic groups at a readable scale.</p>    <textarea class="sparql" id="src-culture-chronology" spellcheck="false" rows="9">SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)
+       (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+} GROUP BY ?culture ORDER BY ?from</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="culture-chronology" disabled>Run</button>
+      <button class="reset" data-q="culture-chronology">Reset</button>
+      <a class="rq" href="culture-chronology.html">own page</a>
+      <span class="timing" id="time-culture-chronology"></span>
+    </div>
+    <div class="view" id="view-culture-chronology"></div>
+    <div class="result" id="out-culture-chronology"></div>
+  </section>
+  <section class="query" id="q-time-slice">
+    <h2>3. What existed around 4500 BC</h2>
+<p class="intro">Sites whose dating interval contains the year in the filter. This is the query to play with: change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000 to -3900 for the Neolithic groups.</p>    <textarea class="sparql" id="src-time-slice" spellcheck="false" rows="11">SELECT ?label ?culture ?wkt WHERE {
+  ?site rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+  FILTER(?st <= -4500 && ?en >= -4500)
+} ORDER BY ?culture ?label</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="time-slice" disabled>Run</button>
+      <button class="reset" data-q="time-slice">Reset</button>
+      <a class="rq" href="time-slice.html">own page</a>
+      <span class="timing" id="time-time-slice"></span>
+    </div>
+    <div class="view" id="view-time-slice"></div>
+    <div class="result" id="out-time-slice"></div>
+  </section>
+  <section class="query" id="q-discovery-and-type">
+    <h2>4. How the sites were found</h2>
+<p class="intro">The site type is known almost only where somebody excavated: stray finds and surface collections account for most of the record and leave the type unknown. That is a fact about research history rather than about prehistory, and it belongs beside every distribution map here. Group by ?type as well to see the cross-tabulation.</p>    <textarea class="sparql" id="src-discovery-and-type" spellcheck="false" rows="8">SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .
+} GROUP BY ?mode ORDER BY DESC(?sites)</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="discovery-and-type" disabled>Run</button>
+      <button class="reset" data-q="discovery-and-type">Reset</button>
+      <a class="rq" href="discovery-and-type.html">own page</a>
+      <span class="timing" id="time-discovery-and-type"></span>
+    </div>
+    <div class="view" id="view-discovery-and-type"></div>
+    <div class="result" id="out-discovery-and-type"></div>
+  </section>
+  <section class="query" id="q-dating-precision">
+    <h2>5. How sharply each group is dated</h2>
+<p class="intro">The width of the dating interval, per cultural group, against the number of sites. A group in the lower right is both well represented and tightly dated; one at the top is carried by an interval so wide that little follows from it.</p>    <textarea class="sparql" id="src-dating-precision" spellcheck="false" rows="10">SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)
+       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {
+  ?site bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+  BIND(?en - ?st AS ?span)
+} GROUP BY ?culture ORDER BY ?widest</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="dating-precision" disabled>Run</button>
+      <button class="reset" data-q="dating-precision">Reset</button>
+      <a class="rq" href="dating-precision.html">own page</a>
+      <span class="timing" id="time-dating-precision"></span>
+    </div>
+    <div class="view" id="view-dating-precision"></div>
+    <div class="result" id="out-dating-precision"></div>
+  </section>
+  <section class="query" id="q-locational-confidence">
+    <h2>6. How well each site is located</h2>
+<p class="intro">The same points as the first map, coloured by the FSL confidence item instead of by culture: Q23 taken directly from the database, Q15 locatable to a district, Q24 only to a municipality centroid. A cluster of Q24 is a cluster of centroids, not a cluster of settlement.</p>    <textarea class="sparql" id="src-locational-confidence" spellcheck="false" rows="9">SELECT ?label ?confidence ?accuracy ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        fsl:certaintyLevel ?cl ;
+        bb5kbc:hatGenauigkeit ?accuracy .
+  BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
+} ORDER BY ?confidence</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="locational-confidence" disabled>Run</button>
+      <button class="reset" data-q="locational-confidence">Reset</button>
+      <a class="rq" href="locational-confidence.html">own page</a>
+      <span class="timing" id="time-locational-confidence"></span>
+    </div>
+    <div class="view" id="view-locational-confidence"></div>
+    <div class="result" id="out-locational-confidence"></div>
+  </section>
+  <section class="query" id="q-uncertain-attributions">
+    <h2>7. Where the record hedges</h2>
+<p class="intro">Values the source marked with a question mark are not quietly cleaned up in this dataset: they carry fsl:certaintyDesc "uncertain". These are the site types the excavator would not commit to.</p>    <textarea class="sparql" id="src-uncertain-attributions" spellcheck="false" rows="8">SELECT ?label ?type ?wkt WHERE {
+  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt .
+  ?t fsl:certaintyDesc "uncertain"@en ; rdfs:label ?type .
+} ORDER BY ?label</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="uncertain-attributions" disabled>Run</button>
+      <button class="reset" data-q="uncertain-attributions">Reset</button>
+      <a class="rq" href="uncertain-attributions.html">own page</a>
+      <span class="timing" id="time-uncertain-attributions"></span>
+    </div>
+    <div class="view" id="view-uncertain-attributions"></div>
+    <div class="result" id="out-uncertain-attributions"></div>
+  </section>
+  <section class="query" id="q-literature-coverage">
+    <h2>8. Sites per district, and how many are published</h2>
+<p class="intro">Where the corpus is dense and where the literature is thin. A district with many sites and few publications is not necessarily under-researched — it may be that its excavations are reported in a form the source database does not cite.</p>    <textarea class="sparql" id="src-literature-coverage" spellcheck="false" rows="8">SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)
+       (COUNT(DISTINCT ?pub) AS ?published) WHERE {
+  ?site a bb5kbc:Fundstelle ;
+        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .
+  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }
+} GROUP BY ?kreis ORDER BY DESC(?sites)</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="literature-coverage" disabled>Run</button>
+      <button class="reset" data-q="literature-coverage">Reset</button>
+      <a class="rq" href="literature-coverage.html">own page</a>
+      <span class="timing" id="time-literature-coverage"></span>
+    </div>
+    <div class="view" id="view-literature-coverage"></div>
+    <div class="result" id="out-literature-coverage"></div>
+  </section>
+  <section class="query" id="q-georeferencing-source">
+    <h2>9. Where the coordinates came from</h2>
+<p class="intro">Every coordinate in this dataset was assigned by a georeferencing activity that records its own source. Provenance of the geometry, not of the site.</p>    <textarea class="sparql" id="src-georeferencing-source" spellcheck="false" rows="8">SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .
+  ?a fsl:hasSourceType/rdfs:label ?source .
+} GROUP BY ?source ORDER BY DESC(?sites)</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="georeferencing-source" disabled>Run</button>
+      <button class="reset" data-q="georeferencing-source">Reset</button>
+      <a class="rq" href="georeferencing-source.html">own page</a>
+      <span class="timing" id="time-georeferencing-source"></span>
+    </div>
+    <div class="view" id="view-georeferencing-source"></div>
+    <div class="result" id="out-georeferencing-source"></div>
+  </section>
+  <section class="query" id="q-cross-border">
+    <h2>10. German and Polish sites per cultural group</h2>
+<p class="intro">The dataset straddles a modern border that means nothing to the fifth millennium BC. Grouping by country and culture shows which groups the border cuts through and which sit wholly on one side — a property of research traditions and of the source databases as much as of prehistory.</p>    <textarea class="sparql" id="src-cross-border" spellcheck="false" rows="8">SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+} GROUP BY ?culture ?land ORDER BY DESC(?sites)</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="cross-border" disabled>Run</button>
+      <button class="reset" data-q="cross-border">Reset</button>
+      <a class="rq" href="cross-border.html">own page</a>
+      <span class="timing" id="time-cross-border"></span>
+    </div>
+    <div class="view" id="view-cross-border"></div>
+    <div class="result" id="out-cross-border"></div>
+  </section>
+  <section class="query" id="q-classes-with-counts">
+    <h2>11. Classes used, with counts</h2>
+<p class="intro">What this collection actually contains — the counterpart to the void:classPartition statistics in the metadata. If the two disagree, the metadata is stale.</p>    <textarea class="sparql" id="src-classes-with-counts" spellcheck="false" rows="8">SELECT ?class (COUNT(?s) AS ?count) WHERE {
+  ?s a ?class
+} GROUP BY ?class ORDER BY DESC(?count)</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="classes-with-counts" disabled>Run</button>
+      <button class="reset" data-q="classes-with-counts">Reset</button>
+      <a class="rq" href="classes-with-counts.html">own page</a>
+      <span class="timing" id="time-classes-with-counts"></span>
+    </div>
+    <div class="view" id="view-classes-with-counts"></div>
+    <div class="result" id="out-classes-with-counts"></div>
+  </section>
+  <section class="query" id="q-sites-via-crm">
+    <h2>12. Sites via their CIDOC CRM superclass</h2>
+<p class="intro">Checks that the alignment holds: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle. This is what lets the collection be queried alongside other N4O collections that never heard of this ontology.</p>    <textarea class="sparql" id="src-sites-via-crm" spellcheck="false" rows="8">SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site a/rdfs:subClassOf* crm:E27_Site
+}</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="sites-via-crm" disabled>Run</button>
+      <button class="reset" data-q="sites-via-crm">Reset</button>
+      <a class="rq" href="sites-via-crm.html">own page</a>
+      <span class="timing" id="time-sites-via-crm"></span>
+    </div>
+    <div class="view" id="view-sites-via-crm"></div>
+    <div class="result" id="out-sites-via-crm"></div>
+  </section>
+
+  <footer class="page-foot">
+    <p>
+      Generated from <code>queries.yaml</code>, so this page, the individual
+      pages and the <code>.rq</code> files cannot drift apart.
+    </p>
+  </footer>
+</div>
+
+<script type="module">
+import { boot, ask, renderTable, hasGeometry, renderMap, VIEWS } from './runner.js';
+
+const QUERIES = {"sites-on-a-map": "SELECT ?label ?culture ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} ORDER BY ?culture ?label", "culture-chronology": "SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)\n       (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n} GROUP BY ?culture ORDER BY ?from", "time-slice": "SELECT ?label ?culture ?wkt WHERE {\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= -4500 && ?en >= -4500)\n} ORDER BY ?culture ?label", "discovery-and-type": "SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .\n} GROUP BY ?mode ORDER BY DESC(?sites)", "dating-precision": "SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)\n       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  BIND(?en - ?st AS ?span)\n} GROUP BY ?culture ORDER BY ?widest", "locational-confidence": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence", "uncertain-attributions": "SELECT ?label ?type ?wkt WHERE {\n  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt .\n  ?t fsl:certaintyDesc \"uncertain\"@en ; rdfs:label ?type .\n} ORDER BY ?label", "literature-coverage": "SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)\n       (COUNT(DISTINCT ?pub) AS ?published) WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .\n  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }\n} GROUP BY ?kreis ORDER BY DESC(?sites)", "georeferencing-source": "SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .\n  ?a fsl:hasSourceType/rdfs:label ?source .\n} GROUP BY ?source ORDER BY DESC(?sites)", "cross-border": "SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} GROUP BY ?culture ?land ORDER BY DESC(?sites)", "classes-with-counts": "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)", "sites-via-crm": "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n}"};
+const SPEC    = {"sites-on-a-map": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}}, "culture-chronology": {"view": "intervals", "cols": {"from": "from", "to": "to", "label": "culture"}}, "time-slice": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}}, "discovery-and-type": {"view": "barchart", "cols": {"category": "mode", "value": "sites"}}, "dating-precision": {"view": "scatter", "cols": {"x": "sites", "y": "widest", "label": "culture"}}, "locational-confidence": {"view": "map", "cols": {"label": "label", "colour": "confidence", "wkt": ""}}, "uncertain-attributions": {"view": "map", "cols": {"label": "label", "colour": "type", "wkt": ""}}, "literature-coverage": {"view": "barchart", "cols": {"category": "kreis", "value": "sites"}}, "georeferencing-source": {"view": "barchart", "cols": {"category": "source", "value": "sites"}}, "cross-border": {"view": "barchart", "cols": {"category": "culture", "value": "sites"}}, "classes-with-counts": {"view": "table", "cols": {}}, "sites-via-crm": {"view": "table", "cols": {}}};
+
+async function run(id) {
+  const btn = document.querySelector(`button.run[data-q="${id}"]`);
+  const out = document.getElementById('out-' + id);
+  const viewEl = document.getElementById('view-' + id);
+  const timing = document.getElementById('time-' + id);
+  btn.disabled = true;
+  timing.textContent = 'running\u2026';
+  out.innerHTML = ''; viewEl.innerHTML = '';
+  const t0 = performance.now();
+  try {
+    const data = await ask(document.getElementById('src-' + id).value);
+    const spec = SPEC[id];
+    if (spec.view !== 'table' && VIEWS[spec.view]) VIEWS[spec.view](viewEl, data, spec.cols);
+    else if (hasGeometry(data)) renderMap(viewEl, data, spec.cols);
+    renderTable(out, data);
+    const dt = ((performance.now() - t0) / 1000).toFixed(1);
+    timing.textContent = data.n ? `${dt}s over ${data.n} triples` : `${dt}s`;
+  } catch (err) {
+    out.innerHTML = `<pre class="error">${err.message}</pre>`;
+    timing.textContent = '';
+  }
+  btn.disabled = false;
+}
+
+document.querySelectorAll('button.run').forEach(b =>
+  b.addEventListener('click', () => run(b.dataset.q)));
+document.querySelectorAll('button.reset').forEach(b =>
+  b.addEventListener('click', () => {
+    const id = b.dataset.q;
+    document.getElementById('src-' + id).value = QUERIES[id];
+    document.getElementById('out-' + id).innerHTML = '';
+    document.getElementById('view-' + id).innerHTML = '';
+    document.getElementById('time-' + id).textContent = '';
+  }));
+boot();
+</script>
+</body>
+</html>

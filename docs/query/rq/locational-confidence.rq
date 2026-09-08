@@ -1,0 +1,20 @@
+# How well each site is located
+# The same points as the first map, coloured by the FSL confidence item
+# instead of by culture: Q23 taken directly from the database, Q15 locatable
+# to a district, Q24 only to a municipality centroid. A cluster of Q24 is a
+# cluster of centroids, not a cluster of settlement.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?confidence ?accuracy ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        fsl:certaintyLevel ?cl ;
+        bb5kbc:hatGenauigkeit ?accuracy .
+  BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
+} ORDER BY ?confidence

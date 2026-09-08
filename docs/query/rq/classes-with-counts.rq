@@ -1,5 +1,12 @@
+# Classes used, with counts
+# What this collection actually contains — the counterpart to the
+# void:classPartition statistics in the metadata. If the two disagree, the
+# metadata is stale.
+
 PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 

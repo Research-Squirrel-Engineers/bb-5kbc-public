@@ -1,0 +1,19 @@
+# Sites per district, and how many are published
+# Where the corpus is dense and where the literature is thin. A district with
+# many sites and few publications is not necessarily under-researched — it may
+# be that its excavations are reported in a form the source database does not
+# cite.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)
+       (COUNT(DISTINCT ?pub) AS ?published) WHERE {
+  ?site a bb5kbc:Fundstelle ;
+        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .
+  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }
+} GROUP BY ?kreis ORDER BY DESC(?sites)

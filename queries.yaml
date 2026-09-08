@@ -19,7 +19,7 @@ collection:
     georeferencing. The application ontology aligns with CIDOC CRM and its extensions CRMgeo, CRMsci and
     CRMarchaeo, with FSL for fuzzy statements and PROV-O for the provenance of the pipeline itself.
   homepage: https://doi.org/10.5281/zenodo.19830968
-  wikidata: http://www.wikidata.org/entity/QTODO
+  wikidata: http://www.wikidata.org/entity/Q141363969
   licence: https://creativecommons.org/licenses/by/4.0/
   version: 0.11.0
   issued: '2026-04-27'
@@ -41,26 +41,161 @@ prefixes: 'PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
 
   PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
 
+  PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+
+  PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+
   PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
   PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
 
   '
 queries:
+- id: sites-on-a-map
+  title: The sites, on a map
+  intro: Every site with its cultural attribution. Any result carrying a coordinate is drawn on a map
+    above the table, whatever else the query asks for — so an edit that adds a filter narrows the map
+    with it.
+  view: map
+  view_columns:
+    label: label
+    colour: culture
+  sparql: "SELECT ?label ?culture ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n  \
+    \      geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label\
+    \ ?culture .\n} ORDER BY ?culture ?label\n"
+- id: culture-chronology
+  title: The cultural groups on a time axis
+  intro: 'Where each cultural group sits in time, and how many sites carry it. The Mesolithic bar spans
+    four thousand years and dwarfs everything else: that is the record, not a drawing error. Add FILTER(?st
+    >= -5500) to see the Neolithic groups at a readable scale.'
+  view: intervals
+  view_columns:
+    from: from
+    to: to
+    label: culture
+  sparql: "SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)\n       (COUNT(DISTINCT ?site) AS ?sites)\
+    \ WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture\
+    \ ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n\
+    } GROUP BY ?culture ORDER BY ?from\n"
+- id: time-slice
+  title: What existed around 4500 BC
+  intro: 'Sites whose dating interval contains the year in the filter. This is the query to play with:
+    change -4500 and press Run again, and the settlement pattern moves. The scale runs from about -5000
+    to -3900 for the Neolithic groups.'
+  view: map
+  view_columns:
+    label: label
+    colour: culture
+  sparql: "SELECT ?label ?culture ?wkt WHERE {\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT\
+    \ ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture\
+    \ ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n\
+    \  FILTER(?st <= -4500 && ?en >= -4500)\n} ORDER BY ?culture ?label\n"
+- id: discovery-and-type
+  title: How the sites were found
+  intro: 'The site type is known almost only where somebody excavated: stray finds and surface collections
+    account for most of the record and leave the type unknown. That is a fact about research history rather
+    than about prehistory, and it belongs beside every distribution map here. Group by ?type as well to
+    see the cross-tabulation.'
+  view: barchart
+  view_columns:
+    category: mode
+    value: sites
+  sparql: "SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label\
+    \ ?mode .\n} GROUP BY ?mode ORDER BY DESC(?sites)\n"
+- id: dating-precision
+  title: How sharply each group is dated
+  intro: The width of the dating interval, per cultural group, against the number of sites. A group in
+    the lower right is both well represented and tightly dated; one at the top is carried by an interval
+    so wide that little follows from it.
+  view: scatter
+  view_columns:
+    x: sites
+    y: widest
+    label: culture
+  sparql: "SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)\n       (MIN(?span) AS ?tightest) (MAX(?span)\
+    \ AS ?widest) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label\
+    \ ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd\
+    \ ?en .\n  BIND(?en - ?st AS ?span)\n} GROUP BY ?culture ORDER BY ?widest\n"
+- id: locational-confidence
+  title: How well each site is located
+  intro: 'The same points as the first map, coloured by the FSL confidence item instead of by culture:
+    Q23 taken directly from the database, Q15 locatable to a district, Q24 only to a municipality centroid.
+    A cluster of Q24 is a cluster of centroids, not a cluster of settlement.'
+  view: map
+  view_columns:
+    label: label
+    colour: confidence
+  sparql: "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label\
+    \ ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit\
+    \ ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence\n"
+- id: uncertain-attributions
+  title: Where the record hedges
+  intro: 'Values the source marked with a question mark are not quietly cleaned up in this dataset: they
+    carry fsl:certaintyDesc "uncertain". These are the site types the excavator would not commit to.'
+  view: map
+  view_columns:
+    label: label
+    colour: type
+  sparql: "SELECT ?label ?type ?wkt WHERE {\n  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;\n\
+    \        geo:hasGeometry/geo:asWKT ?wkt .\n  ?t fsl:certaintyDesc \"uncertain\"@en ; rdfs:label ?type\
+    \ .\n} ORDER BY ?label\n"
+- id: literature-coverage
+  title: Sites per district, and how many are published
+  intro: Where the corpus is dense and where the literature is thin. A district with many sites and few
+    publications is not necessarily under-researched — it may be that its excavations are reported in
+    a form the source database does not cite.
+  view: barchart
+  view_columns:
+    category: kreis
+    value: sites
+  sparql: "SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)\n       (COUNT(DISTINCT ?pub) AS ?published)\
+    \ WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis\
+    \ .\n  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }\n} GROUP BY ?kreis ORDER BY\
+    \ DESC(?sites)\n"
+- id: georeferencing-source
+  title: Where the coordinates came from
+  intro: Every coordinate in this dataset was assigned by a georeferencing activity that records its own
+    source. Provenance of the geometry, not of the site.
+  view: barchart
+  view_columns:
+    category: source
+    value: sites
+  sparql: "SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeGeoreferenziertDurch\
+    \ ?a .\n  ?a fsl:hasSourceType/rdfs:label ?source .\n} GROUP BY ?source ORDER BY DESC(?sites)\n"
+- id: cross-border
+  title: German and Polish sites per cultural group
+  intro: The dataset straddles a modern border that means nothing to the fifth millennium BC. Grouping
+    by country and culture shows which groups the border cuts through and which sit wholly on one side
+    — a property of research traditions and of the source databases as much as of prehistory.
+  view: barchart
+  view_columns:
+    category: culture
+    value: sites
+  sparql: "SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label\
+    \ ?land ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} GROUP\
+    \ BY ?culture ?land ORDER BY DESC(?sites)\n"
 - id: classes-with-counts
   title: Classes used, with counts
-  intro: 'What this collection actually contains. The counterpart to the void:classPartition statistics
-    in the metadata: if the two disagree, the metadata is stale.'
+  intro: What this collection actually contains — the counterpart to the void:classPartition statistics
+    in the metadata. If the two disagree, the metadata is stale.
   sparql: "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)\n"
-- id: sites
-  title: Sites with their labels
-  intro: The archaeological sites themselves, the backbone of the dataset.
-  sparql: "SELECT ?site ?label WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        rdfs:label ?label\n} ORDER\
-    \ BY ?label LIMIT 50\n"
 - id: sites-via-crm
   title: Sites via their CIDOC CRM superclass
-  intro: 'Checks that the alignment works: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle.
-    This is what makes the collection queryable alongside other N4O collections that never heard of this
+  intro: 'Checks that the alignment holds: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle.
+    This is what lets the collection be queried alongside other N4O collections that never heard of this
     ontology.'
   sparql: "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n\
     }\n"
+map:
+  title: Where the sites are
+  intro: 'All 540 sites, with their cultural attribution and the confidence of their location. The four
+    confidence levels come from the FSL vocabulary: Q23 direct from the database, Q15 locatable to a district,
+    Q24 only to a municipality centroid, Q113 a coordinate error.'
+  label_column: label
+  colour_column: culture
+  sparql: "PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>\nPREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\n\
+    PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\n\
+    PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n\
+    \nSELECT ?label ?culture ?confidence ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label\
+    \ ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label\
+    \ ?culture .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n}\n"

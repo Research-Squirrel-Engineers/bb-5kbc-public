@@ -1,0 +1,15 @@
+# Sites via their CIDOC CRM superclass
+# Checks that the alignment holds: the query asks for crm:E27_Site and is
+# answered from bb5kbc:Fundstelle. This is what lets the collection be queried
+# alongside other N4O collections that never heard of this ontology.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site a/rdfs:subClassOf* crm:E27_Site
+}

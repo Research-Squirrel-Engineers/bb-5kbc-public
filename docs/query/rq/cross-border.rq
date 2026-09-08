@@ -1,0 +1,17 @@
+# German and Polish sites per cultural group
+# The dataset straddles a modern border that means nothing to the fifth
+# millennium BC. Grouping by country and culture shows which groups the border
+# cuts through and which sit wholly on one side — a property of research
+# traditions and of the source databases as much as of prehistory.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+} GROUP BY ?culture ?land ORDER BY DESC(?sites)

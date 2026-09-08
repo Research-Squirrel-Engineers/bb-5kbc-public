@@ -14,5 +14,5 @@
     foaf:homepage <https://doi.org/10.5281/zenodo.19830968> ;
     schema:name "BB-5KBC: Fundstellen in Brandenburg, Ostdeutschland und Westpolen um 5000 v. Chr."@de,
         "BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC"@en ;
-    schema:sameAs <http://www.wikidata.org/entity/QTODO> .
+    schema:sameAs <http://www.wikidata.org/entity/Q141363969> .
 

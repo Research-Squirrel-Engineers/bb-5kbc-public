@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<title>Where the sites are</title>
+</head>
+<body>
+<div class="container">
+  <nav class="nav">
+    <a href="index.html">Collection</a>
+    <a href="query/index.html">Queries</a>
+    <a href="map.html" class="active">Map</a>
+  </nav>
+
+  <header class="page-head">
+    <h1>Where the sites are</h1>
+<p class="intro">All 540 sites, with their cultural attribution and the confidence of their location. The four confidence levels come from the FSL vocabulary: Q23 direct from the database, Q15 locatable to a district, Q24 only to a municipality centroid, Q113 a coordinate error.</p>  </header>
+
+  <div class="status">
+    <span class="dot" data-dot></span>
+    <span data-status-text>Starting&hellip;</span>
+  </div>
+  <p class="note" data-graph-note hidden></p>
+
+  <div class="controls">
+    <label for="colour">Colour by</label>
+    <select id="colour"></select>
+  </div>
+
+  <div class="view" id="view"></div>
+
+  <details class="sources">
+    <summary>The query behind this map</summary>
+    <textarea class="sparql" id="src" spellcheck="false" rows="14">PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?culture ?confidence ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        fsl:certaintyLevel ?cl ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+  BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
+}</textarea>
+    <div class="query-bar">
+      <button class="run" id="run" disabled>Run</button>
+      <span class="timing" id="timing"></span>
+    </div>
+  </details>
+
+  <div class="result" id="out"></div>
+
+  <footer class="page-foot">
+    <p>
+      Same graph as the <a href="query/index.html">query pages</a>, so this map
+      cannot show a different corpus than they do.
+      Base map &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors.
+    </p>
+  </footer>
+</div>
+
+<script type="module">
+import { boot, onReady, ask, renderTable, renderMap } from './query/runner.js';
+
+const src = document.getElementById('src');
+const sel = document.getElementById('colour');
+const viewEl = document.getElementById('view');
+const out = document.getElementById('out');
+const timing = document.getElementById('timing');
+let last = null;
+
+function draw() {
+  if (!last) return;
+  renderMap(viewEl, last, { label: "label",
+                            colour: sel.value || '' });
+}
+
+async function run() {
+  timing.textContent = 'running\u2026';
+  try {
+    last = await ask(src.value);
+    /* The colour menu is built from the result, not from a config list: edit
+       the query, add a column, and it becomes a way of colouring the map. */
+    const wanted = sel.value;
+    sel.innerHTML = '<option value="">nothing</option>' +
+      last.cols.filter(c => !/wkt|geom/i.test(c))
+               .map(c => `<option value="${c}">${c}</option>`).join('');
+    sel.value = [...sel.options].some(o => o.value === wanted)
+      ? wanted : "culture";
+    draw();
+    renderTable(out, last);
+    timing.textContent = `${last.total} rows`;
+  } catch (err) {
+    out.innerHTML = `<pre class="error">${err.message}</pre>`;
+    timing.textContent = '';
+  }
+}
+
+sel.addEventListener('change', draw);
+document.getElementById('run').addEventListener('click', run);
+onReady(run);
+boot();
+</script>
+</body>
+</html>

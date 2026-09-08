@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<title>BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC &mdash; queries</title>
+</head>
+<body>
+<div class="container">
+  <nav class="nav">
+    <a href="../index.html">Collection</a>
+    <a href="index.html" class="active">Queries</a>
+    <a href="../map.html">Map</a>
+  </nav>
+
+  <header class="page-head">
+    <h1>BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC</h1>
+<p class="intro">Linked Open Data representation of some 540 archaeological sites in Brandenburg, East Germany and West Poland dating to around 5000 BC, with dating, cultural attribution, discovery events and georeferencing. The application ontology aligns with CIDOC CRM and its extensions CRMgeo, CRMsci and CRMarchaeo, with FSL for fuzzy statements and PROV-O for the provenance of the pipeline itself.</p>    <p class="note">
+      Every query below runs in your browser: the graph is fetched as a static
+      Turtle file and queried with rdflib under Pyodide. There is no endpoint,
+      nothing you type leaves your machine, and an archived copy of this
+      repository stays queryable with no service to keep alive. The first page
+      you open downloads roughly 10&nbsp;MB of Python runtime; after that the
+      browser has it cached.
+    </p>
+  </header>
+
+  <ul class="qlist">
+    <li>
+      <a class="title" href="sites-on-a-map.html">The sites, on a map</a>
+      <p>Every site with its cultural attribution. Any result carrying a coordinate is drawn on a map above the table, whatever else the query asks for — so an edit that adds a filter narrows the map with it.</p>
+      <p class="meta">
+        <span class="tag">table and map</span>
+        <span class="tag">540 rows when built</span>
+        <a href="rq/sites-on-a-map.rq">sites-on-a-map.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="culture-chronology.html">The cultural groups on a time axis</a>
+      <p>Where each cultural group sits in time, and how many sites carry it. The Mesolithic bar spans four thousand years and dwarfs everything else: that is the record, not a drawing error.</p>
+      <p class="meta">
+        <span class="tag">table and interval bars</span>
+        <span class="tag">9 rows when built</span>
+        <a href="rq/culture-chronology.rq">culture-chronology.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="time-slice.html">What existed around 4500 BC</a>
+      <p>Sites whose dating interval contains the year in the filter. This is the query to play with: change -4500 and press Run again, and the settlement pattern moves.</p>
+      <p class="meta">
+        <span class="tag">table and map</span>
+        <span class="tag">408 rows when built</span>
+        <a href="rq/time-slice.rq">time-slice.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="discovery-and-type.html">How the sites were found</a>
+      <p>The site type is known almost only where somebody excavated: stray finds and surface collections account for most of the record and leave the type unknown.</p>
+      <p class="meta">
+        <span class="tag">table and bar chart</span>
+        <span class="tag">12 rows when built</span>
+        <a href="rq/discovery-and-type.rq">discovery-and-type.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="dating-precision.html">How sharply each group is dated</a>
+      <p>The width of the dating interval, per cultural group, against the number of sites.</p>
+      <p class="meta">
+        <span class="tag">table and scatter plot</span>
+        <span class="tag">9 rows when built</span>
+        <a href="rq/dating-precision.rq">dating-precision.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="locational-confidence.html">How well each site is located</a>
+      <p>The same points as the first map, coloured by the FSL confidence item instead of by culture: Q23 taken directly from the database, Q15 locatable to a district, Q24 only to a municipality centroid.</p>
+      <p class="meta">
+        <span class="tag">table and map</span>
+        <span class="tag">540 rows when built</span>
+        <a href="rq/locational-confidence.rq">locational-confidence.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="uncertain-attributions.html">Where the record hedges</a>
+      <p>Values the source marked with a question mark are not quietly cleaned up in this dataset: they carry fsl:certaintyDesc "uncertain". These are the site types the excavator would not commit to.</p>
+      <p class="meta">
+        <span class="tag">table and map</span>
+        <span class="tag">7 rows when built</span>
+        <a href="rq/uncertain-attributions.rq">uncertain-attributions.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="literature-coverage.html">Sites per district, and how many are published</a>
+      <p>Where the corpus is dense and where the literature is thin. A district with many sites and few publications is not necessarily under-researched — it may be that its excavations are reported in a form the source database…</p>
+      <p class="meta">
+        <span class="tag">table and bar chart</span>
+        <span class="tag">82 rows when built</span>
+        <a href="rq/literature-coverage.rq">literature-coverage.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="georeferencing-source.html">Where the coordinates came from</a>
+      <p>Every coordinate in this dataset was assigned by a georeferencing activity that records its own source. Provenance of the geometry, not of the site.</p>
+      <p class="meta">
+        <span class="tag">table and bar chart</span>
+        <span class="tag">4 rows when built</span>
+        <a href="rq/georeferencing-source.rq">georeferencing-source.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="cross-border.html">German and Polish sites per cultural group</a>
+      <p>The dataset straddles a modern border that means nothing to the fifth millennium BC.</p>
+      <p class="meta">
+        <span class="tag">table and bar chart</span>
+        <span class="tag">14 rows when built</span>
+        <a href="rq/cross-border.rq">cross-border.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="classes-with-counts.html">Classes used, with counts</a>
+      <p>What this collection actually contains — the counterpart to the void:classPartition statistics in the metadata. If the two disagree, the metadata is stale.</p>
+      <p class="meta">
+        <span class="tag">table</span>
+        <span class="tag">33 rows when built</span>
+        <a href="rq/classes-with-counts.rq">classes-with-counts.rq</a>
+      </p>
+    </li>
+    <li>
+      <a class="title" href="sites-via-crm.html">Sites via their CIDOC CRM superclass</a>
+      <p>Checks that the alignment holds: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle. This is what lets the collection be queried alongside other N4O collections that never heard of this ontology.</p>
+      <p class="meta">
+        <span class="tag">table</span>
+        <span class="tag">1 rows when built</span>
+        <a href="rq/sites-via-crm.rq">sites-via-crm.rq</a>
+      </p>
+    </li>
+  </ul>
+
+  <footer class="page-foot">
+    <p>
+      All of them on one page: <a href="all.html">all.html</a>. The plain
+      <code>.rq</code> files are in <code>rq/</code>, and the graph itself is
+      <a href="../bb5kbc-bundle.ttl">bb5kbc-bundle.ttl</a>      (1.4&nbsp;MB). The same queries are in
+      <a href="../metadata.ttl">metadata.ttl</a> as
+      <code>sh:SPARQLSelectExecutable</code>, where a harvester can read them.
+    </p>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+# Where the coordinates came from
+# Every coordinate in this dataset was assigned by a georeferencing activity
+# that records its own source. Provenance of the geometry, not of the site.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .
+  ?a fsl:hasSourceType/rdfs:label ?source .
+} GROUP BY ?source ORDER BY DESC(?sites)

@@ -1,0 +1,17 @@
+# How the sites were found
+# The site type is known almost only where somebody excavated: stray finds and
+# surface collections account for most of the record and leave the type
+# unknown. That is a fact about research history rather than about prehistory,
+# and it belongs beside every distribution map here. Group by ?type as well to
+# see the cross-tabulation.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .
+} GROUP BY ?mode ORDER BY DESC(?sites)

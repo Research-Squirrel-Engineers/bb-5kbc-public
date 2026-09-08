@@ -1,0 +1,17 @@
+# The sites, on a map
+# Every site with its cultural attribution. Any result carrying a coordinate
+# is drawn on a map above the table, whatever else the query asks for — so an
+# edit that adds a filter narrows the map with it.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?culture ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
+} ORDER BY ?culture ?label

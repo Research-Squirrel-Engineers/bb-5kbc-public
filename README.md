@@ -16,7 +16,9 @@ loaded into the graph.
 | Publication | [10.5281/zenodo.19830968](https://doi.org/10.5281/zenodo.19830968) |
 | Licence | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
 | Graph | 28,531 triples · 33 classes · 81 properties |
-| Query it | [`docs/sparql.html`](https://research-squirrel-engineers.github.io/bb-5kbc-public/sparql.html) |
+| Wikidata | [Q141363969](http://www.wikidata.org/entity/Q141363969) |
+| Query it | [12 example queries](https://research-squirrel-engineers.github.io/bb-5kbc-public/query/) |
+| Map | [all 540 sites](https://research-squirrel-engineers.github.io/bb-5kbc-public/map.html) |
 
 ---
 
@@ -67,8 +69,6 @@ The bundle is fetched once and then reused. Set `REFRESH_SOURCES = True` in
 
 ## Before this goes into the Knowledge Graph
 
-- [ ] **Wikidata item.** `sameAs:` is `QTODO`. The N4O KG needs a real Q-item;
-      this is the only thing keeping `strict:` at `false`.
 - [ ] **`issued:`** should be the date of the Zenodo release being described.
 - [ ] **fuzzy-sl types.** Five classes reach no CIDOC CRM class: `CertaintyType`,
       `LocationType`, `MethodType`, `PointType`, `SourceType`. They belong to
@@ -76,17 +76,35 @@ The bundle is fetched once and then reused. Set `REFRESH_SOURCES = True` in
       repository's — either anchor them upstream, or add the namespace to
       `model.external` in `metadata.yaml` to record that reusing them unanchored
       is deliberate.
-- [ ] Then set `strict: true` in `.github/workflows/build.yml`, so that a
-      regression fails the build rather than being published quietly.
 
 The collection URI in `id:` is assigned by the VZG by hand; it is not something
 this repository can produce.
 
-The CIDOC CRM alignment itself is **not** on this list. It lives in the bundle,
-which anchors 16 of its 21 domain classes; the build measures that rather than
+The CIDOC CRM alignment is **not** on this list. It lives in the bundle, which
+anchors 16 of its 21 domain classes; the build measures that rather than
 restating it. If an anchor is wrong, fix it in
 [bb-5kbc-sites](https://github.com/Research-Squirrel-Engineers/bb-5kbc-sites)
 and refresh the bundle — never here.
+
+## The query layer
+
+Twelve queries, each on its own page under `docs/query/`, catalogued at
+`docs/query/index.html` and all together on `all.html`. Every one of them is
+editable and runs in the browser; every one is also a plain `.rq` file, and
+every one is in `dist/metadata.ttl` as `sh:SPARQLSelectExecutable`, where a
+harvester can read them.
+
+A result that carries a coordinate is drawn on a map above its table, whatever
+the query declared — so narrowing a query narrows its map with it. Three other
+views are available per query (`intervals`, `barchart`, `scatter`), declared in
+`metadata.yaml` as `view:` with `view_columns:`. The view draws above the
+table, never instead of it: an edit that drops the column a view needs makes it
+say so rather than go blank.
+
+One trap worth knowing before editing: `bb5kbc:hatDatierung` hangs on the
+`KulturelleZuordnung`, not on the `Fundstelle`, because a site with two
+cultural attributions has two datings. `?site bb5kbc:hatDatierung ?d` returns
+nothing at all.
 
 ## What the build checks
 

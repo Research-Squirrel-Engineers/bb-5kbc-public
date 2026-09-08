@@ -1,0 +1,21 @@
+# How sharply each group is dated
+# The width of the dating interval, per cultural group, against the number of
+# sites. A group in the lower right is both well represented and tightly
+# dated; one at the top is carried by an interval so wide that little follows
+# from it.
+
+PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)
+       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {
+  ?site bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .
+  BIND(?en - ?st AS ?span)
+} GROUP BY ?culture ORDER BY ?widest

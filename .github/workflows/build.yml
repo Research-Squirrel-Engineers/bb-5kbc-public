@@ -9,7 +9,4 @@ jobs:
   collection:
     uses: n4o-rse/n4o-kg-profile/.github/workflows/collection.yml@v1
     with:
-      # TODO: set to true once the Wikidata item exists. Until then the SHACL
-      # gate fails the build on that one placeholder — which is the gate doing
-      # its job, but a red badge from day one is not useful. See README.md.
-      strict: false
+      strict: true
