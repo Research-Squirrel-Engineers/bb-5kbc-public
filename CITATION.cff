@@ -1,0 +1,29 @@
+cff-version: 1.2.0
+message: If you use this dataset, please cite it as below.
+type: dataset
+title: "BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC"
+abstract: >-
+  Linked Open Data representation of some 540 archaeological sites with dating,
+  cultural attribution, discovery events and georeferencing, aligned with CIDOC
+  CRM and prepared for loading into the NFDI4Objects Knowledge Graph.
+authors:
+  - given-names: Florian
+    family-names: Thiery
+    orcid: https://orcid.org/0000-0002-3246-3531
+    affiliation: LEIZA — Leibniz-Zentrum für Archäologie
+  - given-names: Sophie C.
+    family-names: Schmidt
+    orcid: https://orcid.org/0000-0003-4696-2101
+    affiliation: Freie Universität Berlin
+version: 0.11.0
+license: CC-BY-4.0
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.19830968
+repository-code: https://github.com/Research-Squirrel-Engineers/bb-5kbc-public
+keywords:
+  - Archaeology
+  - Neolithic
+  - Linked Open Data
+  - CIDOC CRM
+  - NFDI4Objects

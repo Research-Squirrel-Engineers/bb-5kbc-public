@@ -1,0 +1,63 @@
+graph:
+  file: rdf/bb5kbc-bundle.ttl
+  url: bb5kbc-bundle.ttl
+  publish: true
+  engine: null
+  endpoint: https://graph.nfdi4objects.net/api/sparql
+  from: https://graph.nfdi4objects.net/collection/TODO
+page:
+  title: 'BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC'
+  intro: Linked Open Data representation of some 540 archaeological sites in Brandenburg, East Germany
+    and West Poland dating to around 5000 BC, with dating, cultural attribution, discovery events and
+    georeferencing. The application ontology aligns with CIDOC CRM and its extensions CRMgeo, CRMsci and
+    CRMarchaeo, with FSL for fuzzy statements and PROV-O for the provenance of the pipeline itself.
+collection:
+  id: https://graph.nfdi4objects.net/collection/TODO
+  title: 'BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC'
+  description: Linked Open Data representation of some 540 archaeological sites in Brandenburg, East Germany
+    and West Poland dating to around 5000 BC, with dating, cultural attribution, discovery events and
+    georeferencing. The application ontology aligns with CIDOC CRM and its extensions CRMgeo, CRMsci and
+    CRMarchaeo, with FSL for fuzzy statements and PROV-O for the provenance of the pipeline itself.
+  homepage: https://doi.org/10.5281/zenodo.19830968
+  wikidata: http://www.wikidata.org/entity/QTODO
+  licence: https://creativecommons.org/licenses/by/4.0/
+  version: 0.11.0
+  issued: '2026-04-27'
+  landing_page: https://research-squirrel-engineers.github.io/bb-5kbc-sites/
+  creators:
+  - Thiery, Florian
+  - Schmidt, Sophie C.
+  distributions:
+  - title: RDF bundle (data and ontology)
+    url: https://raw.githubusercontent.com/Research-Squirrel-Engineers/bb-5kbc-sites/main/dist/bb5kbc-bundle.ttl
+  triples: 28531
+  classes: 33
+  properties: 81
+  aligned: 3
+prefixes: 'PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+
+  PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+
+  PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+  PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+  '
+queries:
+- id: classes-with-counts
+  title: Classes used, with counts
+  intro: 'What this collection actually contains. The counterpart to the void:classPartition statistics
+    in the metadata: if the two disagree, the metadata is stale.'
+  sparql: "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)\n"
+- id: sites
+  title: Sites with their labels
+  intro: The archaeological sites themselves, the backbone of the dataset.
+  sparql: "SELECT ?site ?label WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        rdfs:label ?label\n} ORDER\
+    \ BY ?label LIMIT 50\n"
+- id: sites-via-crm
+  title: Sites via their CIDOC CRM superclass
+  intro: 'Checks that the alignment works: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle.
+    This is what makes the collection queryable alongside other N4O collections that never heard of this
+    ontology.'
+  sparql: "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n\
+    }\n"

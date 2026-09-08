@@ -1,0 +1,356 @@
+@prefix crm: <http://www.cidoc-crm.org/cidoc-crm/> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix dcmitype: <http://purl.org/dc/dcmitype/> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix fabio: <http://purl.org/spar/fabio/> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix n4o: <https://nfdi4objects.net/ontology#> .
+@prefix n4op: <https://w3id.org/nfdi4objects/profile/v0.1/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix schema: <https://schema.org/> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix spdx: <http://spdx.org/rdf/terms#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+<https://graph.nfdi4objects.net/collection/TODO> a fabio:Database,
+        dcat:Dataset ;
+    dct:accessRights <http://publications.europa.eu/resource/authority/access-right/PUBLIC> ;
+    dct:conformsTo <http://data.europa.eu/r5r/>,
+        <https://w3id.org/nfdi4objects/profile/v0.1> ;
+    dct:creator [ a foaf:Person ;
+            foaf:familyName "Thiery" ;
+            foaf:givenName "Florian" ;
+            foaf:name "Thiery, Florian" ;
+            n4o:orcidId <https://orcid.org/0000-0002-3246-3531> ;
+            schema:affiliation [ a foaf:Organization ;
+                    foaf:name "LEIZA — Leibniz-Zentrum für Archäologie" ] ],
+        [ a foaf:Person ;
+            foaf:familyName "Schmidt" ;
+            foaf:givenName "Sophie C." ;
+            foaf:name "Schmidt, Sophie C." ;
+            n4o:orcidId <https://orcid.org/0000-0003-4696-2101> ;
+            schema:affiliation [ a foaf:Organization ;
+                    foaf:name "Freie Universität Berlin" ] ] ;
+    dct:description "Linked-Open-Data-Aufbereitung von rund 540 archaeologischen Fundstellen in Brandenburg, Ostdeutschland und Westpolen um 5000 v. Chr., mit Datierung, kultureller Zuordnung, Entdeckungsereignissen und Georeferenzierung. Die Anwendungsontologie ist auf CIDOC CRM und seine Erweiterungen CRMgeo, CRMsci und CRMarchaeo ausgerichtet, auf FSL fuer unscharfe Aussagen und auf PROV-O fuer die Provenienz der Pipeline selbst."@de,
+        "Linked Open Data representation of some 540 archaeological sites in Brandenburg, East Germany and West Poland dating to around 5000 BC, with dating, cultural attribution, discovery events and georeferencing. The application ontology aligns with CIDOC CRM and its extensions CRMgeo, CRMsci and CRMarchaeo, with FSL for fuzzy statements and PROV-O for the provenance of the pipeline itself."@en ;
+    dct:isPartOf <https://graph.nfdi4objects.net/collection/> ;
+    dct:issued "2026-04-27"^^xsd:date ;
+    dct:language <http://id.loc.gov/vocabulary/iso639-1/de>,
+        <http://id.loc.gov/vocabulary/iso639-1/en> ;
+    dct:license <https://creativecommons.org/licenses/by/4.0/> ;
+    dct:modified "2026-08-19"^^xsd:date ;
+    dct:publisher [ a foaf:Organization ;
+            foaf:name "Research Squirrel Engineers Network" ] ;
+    dct:title "BB-5KBC: Fundstellen in Brandenburg, Ostdeutschland und Westpolen um 5000 v. Chr."@de,
+        "BB-5KBC: archaeological sites in Brandenburg, East Germany and West Poland around 5000 BC"@en ;
+    dct:type dcmitype:Dataset ;
+    void:classPartition [ void:class <http://w3id.org/bb5kbc/ont/Land> ;
+            void:entities 2 ],
+        [ void:class <http://fuzzy-sl.squirrel.link/ontology/LocationType> ;
+            void:entities 1 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Publikation> ;
+            void:entities 45 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/externalIdentifierType> ;
+            void:entities 6 ],
+        [ void:class owl:ObjectProperty ;
+            void:entities 46 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Entdeckung> ;
+            void:entities 432 ],
+        [ void:class <http://www.opengis.net/ont/sf#Point> ;
+            void:entities 540 ],
+        [ void:class <http://fuzzy-sl.squirrel.link/ontology/PointType> ;
+            void:entities 1 ],
+        [ void:class owl:Class ;
+            void:entities 65 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Kulturgruppe> ;
+            void:entities 9 ],
+        [ void:class <http://fuzzy-sl.squirrel.link/ontology/MethodType> ;
+            void:entities 3 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Bundesland> ;
+            void:entities 15 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Scherbe> ;
+            void:entities 9 ],
+        [ void:class owl:DatatypeProperty ;
+            void:entities 20 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/KulturelleZuordnung> ;
+            void:entities 540 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/DatierungsMethodeType> ;
+            void:entities 2 ],
+        [ void:class prov:Plan ;
+            void:entities 5 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Fundstelle> ;
+            void:entities 540 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Kreis> ;
+            void:entities 82 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet> ;
+            void:entities 540 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/FundstellenartType> ;
+            void:entities 12 ],
+        [ void:class owl:NamedIndividual ;
+            void:entities 13 ],
+        [ void:class prov:Entity ;
+            void:entities 12 ],
+        [ void:class prov:Agent ;
+            void:entities 1 ],
+        [ void:class prov:SoftwareAgent ;
+            void:entities 5 ],
+        [ void:class prov:Activity ;
+            void:entities 5 ],
+        [ void:class owl:Ontology ;
+            void:entities 1 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Gemeinde> ;
+            void:entities 318 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/EntdeckungsartType> ;
+            void:entities 12 ],
+        [ void:class <http://w3id.org/bb5kbc/ont/Datierung> ;
+            void:entities 540 ],
+        [ void:class <http://fuzzy-sl.squirrel.link/ontology/CertaintyType> ;
+            void:entities 4 ],
+        [ void:class <http://fuzzy-sl.squirrel.link/ontology/SourceType> ;
+            void:entities 4 ],
+        [ void:class foaf:Person ;
+            void:entities 1 ] ;
+    void:propertyPartition [ void:property prov:wasGeneratedBy ;
+            void:triples 10 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatEntdeckungsart> ;
+            void:triples 382 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatGenauigkeit> ;
+            void:triples 540 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/datierungStart> ;
+            void:triples 540 ],
+        [ void:property skos:closeMatch ;
+            void:triples 51 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatFundstellenID> ;
+            void:triples 540 ],
+        [ void:property rdfs:comment ;
+            void:triples 32 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/hasLocationType> ;
+            void:triples 540 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/representativeGeometry> ;
+            void:triples 540 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/datierungSicherheitEnd> ;
+            void:triples 540 ],
+        [ void:property geo:asWKT ;
+            void:triples 540 ],
+        [ void:property rdfs:isDefinedBy ;
+            void:triples 89 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/inGemeinde> ;
+            void:triples 540 ],
+        [ void:property geo:hasGeometry ;
+            void:triples 540 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatKatalognummer> ;
+            void:triples 488 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/methodUsed> ;
+            void:triples 540 ],
+        [ void:property skos:exactMatch ;
+            void:triples 108 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatPublikation> ;
+            void:triples 271 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/inKreis> ;
+            void:triples 320 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatScherbe> ;
+            void:triples 9 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/datierungSicherheitStart> ;
+            void:triples 540 ],
+        [ void:property <https://example.org/bb-5kbc-sites/durationSeconds> ;
+            void:triples 3 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/certaintyDesc> ;
+            void:triples 12 ],
+        [ void:property rdfs:subPropertyOf ;
+            void:triples 30 ],
+        [ void:property prov:wasAssociatedWith ;
+            void:triples 547 ],
+        [ void:property prov:wasDerivedFrom ;
+            void:triples 7 ],
+        [ void:property prov:wasInformedBy ;
+            void:triples 4 ],
+        [ void:property schema:image ;
+            void:triples 1 ],
+        [ void:property dct:modified ;
+            void:triples 1 ],
+        [ void:property dct:creator ;
+            void:triples 2 ],
+        [ void:property <https://example.org/bb-5kbc-sites/gitBranch> ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/datierungMethode> ;
+            void:triples 472 ],
+        [ void:property <https://example.org/bb-5kbc-sites/rowCount> ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatFundstellenart> ;
+            void:triples 546 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/wurdeEntdecktDurch> ;
+            void:triples 432 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hasExternalIdentifier> ;
+            void:triples 1057 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/wikidataMatchDescription> ;
+            void:triples 417 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/datierungEnd> ;
+            void:triples 540 ],
+        [ void:property prov:used ;
+            void:triples 10 ],
+        [ void:property <https://example.org/bb-5kbc-sites/warningsLogged> ;
+            void:triples 1 ],
+        [ void:property dct:issued ;
+            void:triples 1 ],
+        [ void:property dct:rights ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/rowCount> ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/wurdeGeoreferenziertDurch> ;
+            void:triples 540 ],
+        [ void:property rdfs:range ;
+            void:triples 26 ],
+        [ void:property dct:subject ;
+            void:triples 1 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/hasReference> ;
+            void:triples 1080 ],
+        [ void:property dct:identifier ;
+            void:triples 540 ],
+        [ void:property <https://example.org/bb-5kbc-sites/qidsFilledGeoref> ;
+            void:triples 1 ],
+        [ void:property prov:endedAtTime ;
+            void:triples 2 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatKulturgruppe> ;
+            void:triples 540 ],
+        [ void:property <https://example.org/bb-5kbc-sites/qidsFilledPublication> ;
+            void:triples 1 ],
+        [ void:property prov:atLocation ;
+            void:triples 16 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/datierungSicherheitRange> ;
+            void:triples 540 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatDatierung> ;
+            void:triples 540 ],
+        [ void:property owl:versionIRI ;
+            void:triples 1 ],
+        [ void:property dct:title ;
+            void:triples 2 ],
+        [ void:property owl:versionInfo ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/dataTripleCount> ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/inBundesland> ;
+            void:triples 85 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/certaintyLevel> ;
+            void:triples 540 ],
+        [ void:property skos:relatedMatch ;
+            void:triples 343 ],
+        [ void:property rdfs:domain ;
+            void:triples 29 ],
+        [ void:property <https://example.org/bb-5kbc-sites/columnCount> ;
+            void:triples 1 ],
+        [ void:property <https://example.org/bb-5kbc-sites/gitCommit> ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatKulturelleZuordnung> ;
+            void:triples 540 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/hasPointType> ;
+            void:triples 540 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/activityDesc> ;
+            void:triples 540 ],
+        [ void:property dct:contributor ;
+            void:triples 2 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hatFID> ;
+            void:triples 540 ],
+        [ void:property <https://example.org/bb-5kbc-sites/gitDirty> ;
+            void:triples 1 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/inLand> ;
+            void:triples 15 ],
+        [ void:property rdfs:subClassOf ;
+            void:triples 62 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/hasSourceTypeDetail> ;
+            void:triples 540 ],
+        [ void:property prov:startedAtTime ;
+            void:triples 2 ],
+        [ void:property skos:prefLabel ;
+            void:triples 994 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/hasSourceType> ;
+            void:triples 540 ],
+        [ void:property <http://w3id.org/bb5kbc/ont/hasExternalIdentifierType> ;
+            void:triples 1007 ],
+        [ void:property rdfs:label ;
+            void:triples 2219 ],
+        [ void:property <http://fuzzy-sl.squirrel.link/ontology/georeferencingBy> ;
+            void:triples 540 ],
+        [ void:property rdf:type ;
+            void:triples 3831 ] ;
+    void:triples 28531 ;
+    dcat:distribution [ dct:title "RDF-Bundle (Daten und Ontologie)"@de,
+                "RDF bundle (data and ontology)"@en ;
+            dct:type n4op:roleBundle ;
+            dcat:accessURL <https://github.com/Research-Squirrel-Engineers/bb-5kbc-sites/> ;
+            dcat:downloadURL <https://raw.githubusercontent.com/Research-Squirrel-Engineers/bb-5kbc-sites/main/dist/bb5kbc-bundle.ttl> ;
+            dcat:mediaType <https://www.iana.org/assignments/media-types/text/turtle> ] ;
+    dcat:keyword "Archaeology",
+        "Brandenburg",
+        "CIDOC CRM",
+        "Linked Open Data",
+        "Neolithic",
+        "SHACL" ;
+    dcat:landingPage <https://research-squirrel-engineers.github.io/bb-5kbc-sites/> ;
+    dcat:version "0.11.0" ;
+    foaf:homepage <https://doi.org/10.5281/zenodo.19830968> ;
+    schema:sameAs <http://www.wikidata.org/entity/QTODO> ;
+    n4op:exampleQuery <file:///home/claude/buildtree/bb-5kbc-public/classes-with-counts>,
+        <file:///home/claude/buildtree/bb-5kbc-public/sites>,
+        <file:///home/claude/buildtree/bb-5kbc-public/sites-via-crm> .
+
+<file:///home/claude/buildtree/bb-5kbc-public/classes-with-counts> a sh:SPARQLSelectExecutable ;
+    dct:title "Verwendete Klassen mit Anzahl"@de,
+        "Classes used, with counts"@en ;
+    rdfs:comment "Was diese Sammlung tatsaechlich enthaelt — die Gegenprobe zur void:classPartition-Statistik in den Metadaten."@de,
+        "What this collection actually contains. The counterpart to the void:classPartition statistics in the metadata: if the two disagree, the metadata is stale."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?class (COUNT(?s) AS ?count) WHERE {
+  ?s a ?class
+} GROUP BY ?class ORDER BY DESC(?count)
+""" .
+
+<file:///home/claude/buildtree/bb-5kbc-public/sites> a sh:SPARQLSelectExecutable ;
+    dct:title "Fundstellen mit Bezeichnung"@de,
+        "Sites with their labels"@en ;
+    rdfs:comment "Die Fundstellen selbst, das Rueckgrat des Datensatzes."@de,
+        "The archaeological sites themselves, the backbone of the dataset."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?site ?label WHERE {
+  ?site a bb5kbc:Fundstelle ;
+        rdfs:label ?label
+} ORDER BY ?label LIMIT 50
+""" .
+
+<file:///home/claude/buildtree/bb-5kbc-public/sites-via-crm> a sh:SPARQLSelectExecutable ;
+    dct:title "Fundstellen ueber die CIDOC-CRM-Oberklasse"@de,
+        "Sites via their CIDOC CRM superclass"@en ;
+    rdfs:comment "Prueft, ob die Ausrichtung greift: gefragt wird nach crm:E27_Site, geantwortet wird aus bb5kbc:Fundstelle."@de,
+        "Checks that the alignment works: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle. This is what makes the collection queryable alongside other N4O collections that never heard of this ontology."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
+  ?site a/rdfs:subClassOf* crm:E27_Site
+}
+""" .
+
+<http://w3id.org/bb5kbc/ont/Entdeckung> rdfs:subClassOf crm:E5_Event .
+
+<http://w3id.org/bb5kbc/ont/Fundstelle> rdfs:subClassOf crm:E27_Site .
+
+<http://w3id.org/bb5kbc/ont/GeoreferenzierungsAktivitaet> rdfs:subClassOf crm:E13_Attribute_Assignment .
+
+<https://raw.githubusercontent.com/Research-Squirrel-Engineers/bb-5kbc-sites/main/dist/bb5kbc-bundle.ttl> spdx:checksum [ spdx:algorithm spdx:checksumAlgorithm_sha256 ;
+            spdx:checksumValue "4e10639d58eb946937b5d93f4089f2d939aa25ca2d86c0478b6e49b843a310cd" ] .
+

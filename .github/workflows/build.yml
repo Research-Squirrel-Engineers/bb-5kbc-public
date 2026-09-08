@@ -1,0 +1,16 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  collection:
+    uses: Research-Squirrel-Engineers/n4o-kg-profile/.github/workflows/collection.yml@v1
+    with:
+      # TODO: set to true once the Wikidata item exists and the collection ID
+      # has been assigned. Until then the SHACL gate would fail the build on
+      # the two placeholders — which is the gate doing its job, but a red
+      # badge from day one is not useful. See the checklist in README.md.
+      strict: false
