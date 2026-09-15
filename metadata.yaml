@@ -144,9 +144,10 @@ map:
   intro:
     en: >-
       All 540 sites, with their cultural attribution and the confidence of
-      their location. The four confidence levels come from the FSL vocabulary:
-      Q23 direct from the database, Q15 locatable to a district, Q24 only to a
-      municipality centroid, Q113 a coordinate error.
+      their location. The four confidence levels come from the FSL vocabulary,
+      most to least precise: high (direct from the database), medium
+      (locatable to a district), low (only to a municipality centroid),
+      dubious (a coordinate error).
     de: >-
       Alle 540 Fundstellen mit kultureller Zuordnung und Verortungsguete.
   colour_column: culture
@@ -156,7 +157,7 @@ map:
             geo:hasGeometry/geo:asWKT ?wkt ;
             fsl:certaintyLevel ?cl ;
             bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
-      BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
+      ?cl rdfs:label ?confidence .
     }
 
 # --- 6. Example queries ------------------------------------------------------
@@ -347,20 +348,21 @@ queries:
     intro:
       en: >-
         The same points as the first map, coloured by the FSL confidence item
-        instead of by culture: Q23 taken directly from the database, Q15
-        locatable to a district, Q24 only to a municipality centroid. A cluster
-        of Q24 is a cluster of centroids, not a cluster of settlement.
+        instead of by culture: high taken directly from the database, medium
+        locatable to a district, low only to a municipality centroid. A cluster
+        of low is a cluster of centroids, not a cluster of settlement.
       de: >-
         Dieselben Punkte, gefaerbt nach FSL-Verortungsguete statt nach Kultur.
-        Eine Haeufung von Q24 ist eine Haeufung von Mittelpunkten.
+        Eine Haeufung von "low" ist eine Haeufung von Mittelpunkten.
     sparql: |
       SELECT ?label ?confidence ?accuracy ?wkt WHERE {
         ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
               geo:hasGeometry/geo:asWKT ?wkt ;
               fsl:certaintyLevel ?cl ;
               bb5kbc:hatGenauigkeit ?accuracy .
-        BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
-      } ORDER BY ?confidence
+        ?cl rdfs:label ?confidence .
+        VALUES (?confidence ?rank) { ("high"@en 1) ("medium"@en 2) ("low"@en 3) ("dubious"@en 4) }
+      } ORDER BY ?rank ?label
 
   - id: uncertain-attributions
     view: map
