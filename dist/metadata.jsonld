@@ -100,11 +100,11 @@
       "de": "Wo die Fundstellen liegen"
     },
     "intro": {
-      "en": "All 540 sites, with their cultural attribution and the confidence of their location. The four confidence levels come from the FSL vocabulary: Q23 direct from the database, Q15 locatable to a district, Q24 only to a municipality centroid, Q113 a coordinate error.",
+      "en": "All 540 sites, with their cultural attribution and the confidence of their location. The four confidence levels come from the FSL vocabulary, most to least precise: high (direct from the database), medium (locatable to a district), low (only to a municipality centroid), dubious (a coordinate error).",
       "de": "Alle 540 Fundstellen mit kultureller Zuordnung und Verortungsguete."
     },
     "colour_column": "culture",
-    "sparql": "SELECT ?label ?culture ?confidence ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n}\n"
+    "sparql": "SELECT ?label ?culture ?confidence ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n  ?cl rdfs:label ?confidence .\n}\n"
   },
   "prefixes": "PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>\nPREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>\nPREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>\nPREFIX geo: <http://www.opengis.net/ont/geosparql#>\nPREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>\nPREFIX skos: <http://www.w3.org/2004/02/skos/core#>\n",
   "queries": [
@@ -240,10 +240,10 @@
         "de": "Wie gut jede Fundstelle verortet ist"
       },
       "intro": {
-        "en": "The same points as the first map, coloured by the FSL confidence item instead of by culture: Q23 taken directly from the database, Q15 locatable to a district, Q24 only to a municipality centroid. A cluster of Q24 is a cluster of centroids, not a cluster of settlement.",
-        "de": "Dieselben Punkte, gefaerbt nach FSL-Verortungsguete statt nach Kultur. Eine Haeufung von Q24 ist eine Haeufung von Mittelpunkten."
+        "en": "The same points as the first map, coloured by the FSL confidence item instead of by culture: high taken directly from the database, medium locatable to a district, low only to a municipality centroid. A cluster of low is a cluster of centroids, not a cluster of settlement.",
+        "de": "Dieselben Punkte, gefaerbt nach FSL-Verortungsguete statt nach Kultur. Eine Haeufung von \"low\" ist eine Haeufung von Mittelpunkten."
       },
-      "sparql": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence\n"
+      "sparql": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  ?cl rdfs:label ?confidence .\n  VALUES (?confidence ?rank) { (\"high\"@en 1) (\"medium\"@en 2) (\"low\"@en 3) (\"dubious\"@en 4) }\n} ORDER BY ?rank ?label\n"
     },
     {
       "id": "uncertain-attributions",

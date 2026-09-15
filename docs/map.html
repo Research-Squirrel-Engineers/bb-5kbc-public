@@ -21,7 +21,7 @@
 
   <header class="page-head">
     <h1>Where the sites are</h1>
-<p class="intro">All 540 sites, with their cultural attribution and the confidence of their location. The four confidence levels come from the FSL vocabulary: Q23 direct from the database, Q15 locatable to a district, Q24 only to a municipality centroid, Q113 a coordinate error.</p>  </header>
+<p class="intro">All 540 sites, with their cultural attribution and the confidence of their location. The four confidence levels come from the FSL vocabulary, most to least precise: high (direct from the database), medium (locatable to a district), low (only to a municipality centroid), dubious (a coordinate error).</p>  </header>
 
   <div class="status">
     <span class="dot" data-dot></span>
@@ -50,7 +50,7 @@ SELECT ?label ?culture ?confidence ?wkt WHERE {
         geo:hasGeometry/geo:asWKT ?wkt ;
         fsl:certaintyLevel ?cl ;
         bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
-  BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
+  ?cl rdfs:label ?confidence .
 }</textarea>
     <div class="query-bar">
       <button class="run" id="run" disabled>Run</button>
