@@ -319,6 +319,7 @@
         <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/georeferencing-source>,
         <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/literature-coverage>,
         <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/locational-confidence>,
+        <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/periodo-matches>,
         <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-on-a-map>,
         <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-via-crm>,
         <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/time-slice>,
@@ -476,6 +477,31 @@ SELECT ?label ?confidence ?accuracy ?wkt WHERE {
         bb5kbc:hatGenauigkeit ?accuracy .
   BIND(REPLACE(STR(?cl), "^.*/", "") AS ?confidence)
 } ORDER BY ?confidence
+""" .
+
+<file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/periodo-matches> a sh:SPARQLSelectExecutable ;
+    dct:title "Wie sicher jede Fundstelle einer Perio.do-Periode zugeordnet ist"@de,
+        "How confidently each site is matched to a Perio.do period"@en ;
+    rdfs:comment "Der Perio.do-Verweis haengt an der Datierung, nicht an der Fundstelle: Eine Fundstelle mit zwei Kulturzuordnungen hat zwei Datierungen, die je einzeln verknuepft werden. skos:exactMatch, skos:closeMatch und skos:relatedMatch stehen fuer abnehmende Sicherheit dieser Zuordnung."@de,
+        "The Perio.do link sits on the dating, not on the site itself: a site with two cultural attributions carries two datings, each matched to Perio.do independently. skos:exactMatch, skos:closeMatch and skos:relatedMatch record decreasing confidence in that match. 501 of the 542 datings carry one of the three, and together they only ever point to 6 distinct Perio.do periods — several cultural groups share the same external definition."@en ;
+    sh:select """PREFIX bb5kbc: <http://w3id.org/bb5kbc/ont/>
+PREFIX crm: <http://www.cidoc-crm.org/cidoc-crm/>
+PREFIX fsl: <http://fuzzy-sl.squirrel.link/ontology/>
+PREFIX geo: <http://www.opengis.net/ont/geosparql#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?label ?culture ?relation ?periodo ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d ?rel ?periodoUri .
+  FILTER(?rel IN (skos:exactMatch, skos:closeMatch, skos:relatedMatch))
+  BIND(REPLACE(STR(?rel), "^.*#", "") AS ?relation)
+  BIND(REPLACE(STR(?periodoUri), "^.*/", "") AS ?periodo)
+} ORDER BY ?relation ?label
 """ .
 
 <file:///home/runner/work/bb-5kbc-public/bb-5kbc-public/sites-on-a-map> a sh:SPARQLSelectExecutable ;

@@ -128,8 +128,31 @@
     <div class="downloads" id="dl-dating-precision"></div>
     <div class="result" id="out-dating-precision"></div>
   </section>
+  <section class="query" id="q-periodo-matches">
+    <h2>6. How confidently each site is matched to a Perio.do period</h2>
+<p class="intro">The Perio.do link sits on the dating, not on the site itself: a site with two cultural attributions carries two datings, each matched to Perio.do independently. skos:exactMatch, skos:closeMatch and skos:relatedMatch record decreasing confidence in that match. 501 of the 542 datings carry one of the three, and together they only ever point to 6 distinct Perio.do periods — several cultural groups share the same external definition.</p>    <textarea class="sparql" id="src-periodo-matches" spellcheck="false" rows="13">SELECT ?label ?culture ?relation ?periodo ?wkt WHERE {
+  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
+        geo:hasGeometry/geo:asWKT ?wkt ;
+        bb5kbc:hatKulturelleZuordnung ?kz .
+  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;
+      bb5kbc:hatDatierung ?d .
+  ?d ?rel ?periodoUri .
+  FILTER(?rel IN (skos:exactMatch, skos:closeMatch, skos:relatedMatch))
+  BIND(REPLACE(STR(?rel), "^.*#", "") AS ?relation)
+  BIND(REPLACE(STR(?periodoUri), "^.*/", "") AS ?periodo)
+} ORDER BY ?relation ?label</textarea>
+    <div class="query-bar">
+      <button class="run" data-q="periodo-matches" disabled>Run</button>
+      <button class="reset" data-q="periodo-matches">Reset</button>
+      <a class="rq" href="periodo-matches.html">own page</a>
+      <span class="timing" id="time-periodo-matches"></span>
+    </div>
+    <div class="view" id="view-periodo-matches"></div>
+    <div class="downloads" id="dl-periodo-matches"></div>
+    <div class="result" id="out-periodo-matches"></div>
+  </section>
   <section class="query" id="q-locational-confidence">
-    <h2>6. How well each site is located</h2>
+    <h2>7. How well each site is located</h2>
 <p class="intro">The same points as the first map, coloured by the FSL confidence item instead of by culture: Q23 taken directly from the database, Q15 locatable to a district, Q24 only to a municipality centroid. A cluster of Q24 is a cluster of centroids, not a cluster of settlement.</p>    <textarea class="sparql" id="src-locational-confidence" spellcheck="false" rows="9">SELECT ?label ?confidence ?accuracy ?wkt WHERE {
   ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;
         geo:hasGeometry/geo:asWKT ?wkt ;
@@ -148,7 +171,7 @@
     <div class="result" id="out-locational-confidence"></div>
   </section>
   <section class="query" id="q-uncertain-attributions">
-    <h2>7. Where the record hedges</h2>
+    <h2>8. Where the record hedges</h2>
 <p class="intro">Values the source marked with a question mark are not quietly cleaned up in this dataset: they carry fsl:certaintyDesc "uncertain". These are the site types the excavator would not commit to.</p>    <textarea class="sparql" id="src-uncertain-attributions" spellcheck="false" rows="8">SELECT ?label ?type ?wkt WHERE {
   ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;
         geo:hasGeometry/geo:asWKT ?wkt .
@@ -165,7 +188,7 @@
     <div class="result" id="out-uncertain-attributions"></div>
   </section>
   <section class="query" id="q-literature-coverage">
-    <h2>8. Sites per district, and how many are published</h2>
+    <h2>9. Sites per district, and how many are published</h2>
 <p class="intro">Where the corpus is dense and where the literature is thin. A district with many sites and few publications is not necessarily under-researched — it may be that its excavations are reported in a form the source database does not cite.</p>    <textarea class="sparql" id="src-literature-coverage" spellcheck="false" rows="8">SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)
        (COUNT(DISTINCT ?pub) AS ?published) WHERE {
   ?site a bb5kbc:Fundstelle ;
@@ -183,7 +206,7 @@
     <div class="result" id="out-literature-coverage"></div>
   </section>
   <section class="query" id="q-georeferencing-source">
-    <h2>9. Where the coordinates came from</h2>
+    <h2>10. Where the coordinates came from</h2>
 <p class="intro">Every coordinate in this dataset was assigned by a georeferencing activity that records its own source. Provenance of the geometry, not of the site.</p>    <textarea class="sparql" id="src-georeferencing-source" spellcheck="false" rows="8">SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {
   ?site bb5kbc:wurdeGeoreferenziertDurch ?a .
   ?a fsl:hasSourceType/rdfs:label ?source .
@@ -199,7 +222,7 @@
     <div class="result" id="out-georeferencing-source"></div>
   </section>
   <section class="query" id="q-cross-border">
-    <h2>10. German and Polish sites per cultural group</h2>
+    <h2>11. German and Polish sites per cultural group</h2>
 <p class="intro">The dataset straddles a modern border that means nothing to the fifth millennium BC. Grouping by country and culture shows which groups the border cuts through and which sit wholly on one side — a property of research traditions and of the source databases as much as of prehistory.</p>    <textarea class="sparql" id="src-cross-border" spellcheck="false" rows="8">SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {
   ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;
         bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .
@@ -215,7 +238,7 @@
     <div class="result" id="out-cross-border"></div>
   </section>
   <section class="query" id="q-classes-with-counts">
-    <h2>11. Classes used, with counts</h2>
+    <h2>12. Classes used, with counts</h2>
 <p class="intro">What this collection actually contains — the counterpart to the void:classPartition statistics in the metadata. If the two disagree, the metadata is stale.</p>    <textarea class="sparql" id="src-classes-with-counts" spellcheck="false" rows="8">SELECT ?class (COUNT(?s) AS ?count) WHERE {
   ?s a ?class
 } GROUP BY ?class ORDER BY DESC(?count)</textarea>
@@ -230,7 +253,7 @@
     <div class="result" id="out-classes-with-counts"></div>
   </section>
   <section class="query" id="q-sites-via-crm">
-    <h2>12. Sites via their CIDOC CRM superclass</h2>
+    <h2>13. Sites via their CIDOC CRM superclass</h2>
 <p class="intro">Checks that the alignment holds: the query asks for crm:E27_Site and is answered from bb5kbc:Fundstelle. This is what lets the collection be queried alongside other N4O collections that never heard of this ontology.</p>    <textarea class="sparql" id="src-sites-via-crm" spellcheck="false" rows="8">SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {
   ?site a/rdfs:subClassOf* crm:E27_Site
 }</textarea>
@@ -257,8 +280,8 @@
 import { boot, ask, renderTable, hasGeometry, renderMap, VIEWS,
          readControl, applyControls, offerDownloads } from './runner.js';
 
-const QUERIES = {"sites-on-a-map": "SELECT ?label ?culture ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} ORDER BY ?culture ?label", "culture-chronology": "SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)\n       (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n} GROUP BY ?culture ORDER BY ?from", "time-slice": "SELECT ?label ?culture ?wkt WHERE {\n  VALUES ?from { -4700 }\n  VALUES ?to   { -4500 }\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= ?to && ?en >= ?from)\n} ORDER BY ?culture ?label", "discovery-and-type": "SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .\n} GROUP BY ?mode ORDER BY DESC(?sites)", "dating-precision": "SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)\n       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  BIND(?en - ?st AS ?span)\n} GROUP BY ?culture ORDER BY ?widest", "locational-confidence": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence", "uncertain-attributions": "SELECT ?label ?type ?wkt WHERE {\n  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt .\n  ?t fsl:certaintyDesc \"uncertain\"@en ; rdfs:label ?type .\n} ORDER BY ?label", "literature-coverage": "SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)\n       (COUNT(DISTINCT ?pub) AS ?published) WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .\n  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }\n} GROUP BY ?kreis ORDER BY DESC(?sites)", "georeferencing-source": "SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .\n  ?a fsl:hasSourceType/rdfs:label ?source .\n} GROUP BY ?source ORDER BY DESC(?sites)", "cross-border": "SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} GROUP BY ?culture ?land ORDER BY DESC(?sites)", "classes-with-counts": "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)", "sites-via-crm": "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n}"};
-const SPEC    = {"sites-on-a-map": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}, "controls": []}, "culture-chronology": {"view": "intervals", "cols": {"from": "from", "to": "to", "label": "culture"}, "controls": []}, "time-slice": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}, "controls": [{"var": "from", "label": "From (BC)", "min": -8000, "max": -3800, "step": 50}, {"var": "to", "label": "To (BC)", "min": -8000, "max": -3800, "step": 50}]}, "discovery-and-type": {"view": "barchart", "cols": {"category": "mode", "value": "sites"}, "controls": []}, "dating-precision": {"view": "scatter", "cols": {"x": "sites", "y": "widest", "label": "culture"}, "controls": []}, "locational-confidence": {"view": "map", "cols": {"label": "label", "colour": "confidence", "wkt": ""}, "controls": []}, "uncertain-attributions": {"view": "map", "cols": {"label": "label", "colour": "type", "wkt": ""}, "controls": []}, "literature-coverage": {"view": "barchart", "cols": {"category": "kreis", "value": "sites"}, "controls": []}, "georeferencing-source": {"view": "barchart", "cols": {"category": "source", "value": "sites"}, "controls": []}, "cross-border": {"view": "barchart", "cols": {"category": "culture", "value": "sites"}, "controls": []}, "classes-with-counts": {"view": "table", "cols": {}, "controls": []}, "sites-via-crm": {"view": "table", "cols": {}, "controls": []}};
+const QUERIES = {"sites-on-a-map": "SELECT ?label ?culture ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} ORDER BY ?culture ?label", "culture-chronology": "SELECT ?culture (MIN(?st) AS ?from) (MAX(?en) AS ?to)\n       (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n} GROUP BY ?culture ORDER BY ?from", "time-slice": "SELECT ?label ?culture ?wkt WHERE {\n  VALUES ?from { -4700 }\n  VALUES ?to   { -4500 }\n  ?site rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  FILTER(?st <= ?to && ?en >= ?from)\n} ORDER BY ?culture ?label", "discovery-and-type": "SELECT ?mode (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeEntdecktDurch/bb5kbc:hatEntdeckungsart/rdfs:label ?mode .\n} GROUP BY ?mode ORDER BY DESC(?sites)", "dating-precision": "SELECT ?culture (COUNT(DISTINCT ?site) AS ?sites)\n       (MIN(?span) AS ?tightest) (MAX(?span) AS ?widest) WHERE {\n  ?site bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d bb5kbc:datierungStart ?st ; bb5kbc:datierungEnd ?en .\n  BIND(?en - ?st AS ?span)\n} GROUP BY ?culture ORDER BY ?widest", "periodo-matches": "SELECT ?label ?culture ?relation ?periodo ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        bb5kbc:hatKulturelleZuordnung ?kz .\n  ?kz bb5kbc:hatKulturgruppe/rdfs:label ?culture ;\n      bb5kbc:hatDatierung ?d .\n  ?d ?rel ?periodoUri .\n  FILTER(?rel IN (skos:exactMatch, skos:closeMatch, skos:relatedMatch))\n  BIND(REPLACE(STR(?rel), \"^.*#\", \"\") AS ?relation)\n  BIND(REPLACE(STR(?periodoUri), \"^.*/\", \"\") AS ?periodo)\n} ORDER BY ?relation ?label", "locational-confidence": "SELECT ?label ?confidence ?accuracy ?wkt WHERE {\n  ?site a bb5kbc:Fundstelle ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt ;\n        fsl:certaintyLevel ?cl ;\n        bb5kbc:hatGenauigkeit ?accuracy .\n  BIND(REPLACE(STR(?cl), \"^.*/\", \"\") AS ?confidence)\n} ORDER BY ?confidence", "uncertain-attributions": "SELECT ?label ?type ?wkt WHERE {\n  ?site bb5kbc:hatFundstellenart ?t ; rdfs:label ?label ;\n        geo:hasGeometry/geo:asWKT ?wkt .\n  ?t fsl:certaintyDesc \"uncertain\"@en ; rdfs:label ?type .\n} ORDER BY ?label", "literature-coverage": "SELECT ?kreis (COUNT(DISTINCT ?site) AS ?sites)\n       (COUNT(DISTINCT ?pub) AS ?published) WHERE {\n  ?site a bb5kbc:Fundstelle ;\n        bb5kbc:inGemeinde/bb5kbc:inKreis/rdfs:label ?kreis .\n  OPTIONAL { ?site bb5kbc:hatPublikation ?p BIND(?site AS ?pub) }\n} GROUP BY ?kreis ORDER BY DESC(?sites)", "georeferencing-source": "SELECT ?source (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:wurdeGeoreferenziertDurch ?a .\n  ?a fsl:hasSourceType/rdfs:label ?source .\n} GROUP BY ?source ORDER BY DESC(?sites)", "cross-border": "SELECT ?culture ?land (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site bb5kbc:inGemeinde/bb5kbc:inKreis/bb5kbc:inBundesland/bb5kbc:inLand/rdfs:label ?land ;\n        bb5kbc:hatKulturelleZuordnung/bb5kbc:hatKulturgruppe/rdfs:label ?culture .\n} GROUP BY ?culture ?land ORDER BY DESC(?sites)", "classes-with-counts": "SELECT ?class (COUNT(?s) AS ?count) WHERE {\n  ?s a ?class\n} GROUP BY ?class ORDER BY DESC(?count)", "sites-via-crm": "SELECT (COUNT(DISTINCT ?site) AS ?sites) WHERE {\n  ?site a/rdfs:subClassOf* crm:E27_Site\n}"};
+const SPEC    = {"sites-on-a-map": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}, "controls": []}, "culture-chronology": {"view": "intervals", "cols": {"from": "from", "to": "to", "label": "culture"}, "controls": []}, "time-slice": {"view": "map", "cols": {"label": "label", "colour": "culture", "wkt": ""}, "controls": [{"var": "from", "label": "From (BC)", "min": -8000, "max": -3800, "step": 50}, {"var": "to", "label": "To (BC)", "min": -8000, "max": -3800, "step": 50}]}, "discovery-and-type": {"view": "barchart", "cols": {"category": "mode", "value": "sites"}, "controls": []}, "dating-precision": {"view": "scatter", "cols": {"x": "sites", "y": "widest", "label": "culture"}, "controls": []}, "periodo-matches": {"view": "map", "cols": {"label": "label", "colour": "relation", "wkt": ""}, "controls": []}, "locational-confidence": {"view": "map", "cols": {"label": "label", "colour": "confidence", "wkt": ""}, "controls": []}, "uncertain-attributions": {"view": "map", "cols": {"label": "label", "colour": "type", "wkt": ""}, "controls": []}, "literature-coverage": {"view": "barchart", "cols": {"category": "kreis", "value": "sites"}, "controls": []}, "georeferencing-source": {"view": "barchart", "cols": {"category": "source", "value": "sites"}, "controls": []}, "cross-border": {"view": "barchart", "cols": {"category": "culture", "value": "sites"}, "controls": []}, "classes-with-counts": {"view": "table", "cols": {}, "controls": []}, "sites-via-crm": {"view": "table", "cols": {}, "controls": []}};
 
 function buildControls(id) {
   const host = document.querySelector(`[data-controls="${id}"]`);
